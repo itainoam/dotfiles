@@ -1,0 +1,35 @@
+set multiple-cursors
+set surround
+set commentary
+set incsearch hlsearch
+set ignorecase smartcase
+set matchpairs+=<:>
+let mapleader = " "
+
+nnoremap <leader><esc> :nohls<cr>
+
+change multiple cursor shortcuts
+map <C-N>  <A-N>
+map <C-P>  <A-P>
+map <C-X>  <A-X>
+map g<C-N> g<A-N>
+"
+" Integrate with system clipboard
+set clipboard=unnamedplus,unnamed
+
+" more consistant with how C and D work
+nnoremap Y y$
+
+nmap <leader>f. :action ShowNavBar <cr>
+nmap <leader>fr :action RecentFiles <cr>
+nmap <leader>fr :action RecentFiles <cr>
+nmap <leader>h :action ShowErrorDescription <cr>
+nmap <leader>cf :action ReformatWithPrettierAction <cr>
+nnoremap <leader>re :action RenameElement<cr>
+nnoremap <leader>rf :action RenameFile<cr>
+nmap [e :action GotoPreviousError <cr>
+nmap ]e :action GotoNextError <cr>
+nmap [q :action GotoPreviousError <cr>
+nmap ]q :action GotoNextError <cr>
+nnoremap [c :action VcsShowPrevChangeMarker<cr>
+nnoremap ]c :action VcsShowNextChangeMarker<cr>
