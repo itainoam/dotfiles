@@ -23,6 +23,7 @@ Plug 'airblade/vim-rooter'
 " Plug 'vimwiki/vimwiki'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
+Plug 'tpope/vim-unimpaired'
 Plug 'lambdalisue/suda.vim' " for editing with sudo in nvim
 
 Plug 'rakr/vim-one' " or other package manager
@@ -131,7 +132,8 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <leader>h <Plug>(coc-diagnostic-info)
-  
+nmap <silent> gr <Plug>(coc-references)
+
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
@@ -272,7 +274,6 @@ set foldlevelstart=10   " open most folds by default
 set foldnestmax=10      " 10 nested fold max
 set foldmethod=indent
 
-
 " Maintain undo history between sessions
 if !isdirectory($HOME . "/.vim/undodir")
     call mkdir($HOME . "/.vim/undodir", "p", 0700)
@@ -332,5 +333,7 @@ nnoremap <leader>// :Grep
 " write with sudo
 command! Sudow :execute 'w suda://%' 
 
- let &t_ut=''
+" autosave
+au BufLeave * silent! wall
+
 

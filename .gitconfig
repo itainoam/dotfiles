@@ -11,7 +11,7 @@
     pager = diff-so-fancy | less --tabs=4 -RFX
 	excludesfile = ~/.gitignore
 [alias]
-  lg = !git --no-pager log --pretty=format:'%h %<(20)%an %<(15)%cr %s %C(yellow)%d%Creset' --decorate-refs="*master*" -20
+  lg = !git --no-pager log --pretty=format:'%h %<(20)%an %<(15)%cr %s %C(yellow)%d%Creset' --decorate-refs="*develop*" -20
   lg-file = !git lg --follow 
     a = add
     recent = !git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads/ | head -n 100

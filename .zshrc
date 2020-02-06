@@ -43,26 +43,28 @@ SAVEHIST=10000
 setopt APPEND_HISTORY
 setopt SHARE_HISTORY
 
+# sets a nice prompt
+PROMPT='%(?.%F{green}√.%F{red}?%?)%f %B%F{240}%1~%f%b %# '
+
 #adds powerline
-POWERLINE_PATH=$(which powerline-go)
+#POWERLINE_PATH=$(which powerline-go)
 
-function powerline_precmd() {
-    PS1="$($POWERLINE_PATH -error $? -shell zsh)"
-}
+# function powerline_precmd() {
+#     PS1="$($POWERLINE_PATH -error $? -shell zsh)"
+# }
+# 
+# function install_powerline_precmd() {
+#   for s in "${precmd_functions[@]}"; do
+#     if [ "$s" = "powerline_precmd" ]; then
+#       return
+#     fi
+#   done
+#   precmd_functions+=(powerline_precmd)
+# }
 
-function install_powerline_precmd() {
-  for s in "${precmd_functions[@]}"; do
-    if [ "$s" = "powerline_precmd" ]; then
-      return
-    fi
-  done
-  precmd_functions+=(powerline_precmd)
-}
-
-if [ "$TERM" != "linux" ] && [ -f $POWERLINE_PATH ];then
-    install_powerline_precmd
-fi
-
+# if [ "$TERM" != "linux" ] && [ -f $POWERLINE_PATH ];then
+#    install_powerline_precmd
+# fi
 # adds autojump
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
 
