@@ -1,4 +1,4 @@
-#
+	#
 # Defines environment variables.
 #
 # Authors:
@@ -139,9 +139,16 @@ g-start() {
 }
 
 g-finish() {
-JIRA=$(git branch | sed -n '/\* /s///p' | grep -oiE 'ui-[0-9]{4}')
-jira transition --noedit 'Start Progress' $JIRA || true;
-jira transition --noedit 'Ready for review' $JIRA || true;
-    hub pull-request --push --browse --no-edit
+  JIRA=$(git branch | sed -n '/\* /s///p' | grep -oiE 'SCPJM-[0-9]{4}');
+  DIFF_LOG=$(git log --pretty=format:%s%n%n%b origin/develop..);
+
+  # jira transition --noedit 'Start Progress' $JIRA || true;
+  # jira transition --noedit 'Ready for review' $JIRA || true;
+  
+  # sometime previous pr msg is left, no need to use them.
+  rm ~/dev/meetings-ui-web/.git/PULLREQ_EDITMSG
+
+  echo $DIFF_LOG |cat - ~/pr-template.md > /tmp/out && mv /tmp/out ~/pr-template-with-changes.md;
+  hub pull-request --push --browse -F - --edit < ~/pr-template-with-changes.md
 }
 
