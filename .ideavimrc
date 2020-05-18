@@ -1,11 +1,13 @@
 set multiple-cursors
 set surround
 set commentary
+set argtextobj
+set ReplaceWithRegister
+
 set incsearch hlsearch
 set ignorecase smartcase
 set matchpairs+=<:>
 let mapleader = " "
-
 nnoremap <leader><esc> :nohls<cr>
 
 change multiple cursor shortcuts
@@ -16,12 +18,11 @@ map g<C-N> g<A-N>
 "
 " Integrate with system clipboard
 set clipboard=unnamedplus,unnamed
-
+set ideastatusicon
 " more consistant with how C and D work
 nnoremap Y y$
 
 nmap <leader>f. :action ShowNavBar <cr>
-nmap <leader>fr :action RecentFiles <cr>
 nmap <leader>fr :action RecentFiles <cr>
 nmap <leader>h :action ShowErrorDescription <cr>
 nmap <leader>cf :action ReformatWithPrettierAction <cr>
@@ -33,3 +34,9 @@ nmap [q :action GotoPreviousError <cr>
 nmap ]q :action GotoNextError <cr>
 nnoremap [c :action VcsShowPrevChangeMarker<cr>
 nnoremap ]c :action VcsShowNextChangeMarker<cr>
+
+" Window management
+nnoremap <leader>ws  :split<CR>
+nnoremap <leader>wv :vsplit<CR>
+nnoremap <leader>wq :q<CR>
+nnoremap <leader>ww <c-w><c-w>

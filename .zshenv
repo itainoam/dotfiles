@@ -57,7 +57,7 @@ codi() {
     }
 
 branches()  {
-    git branch --sort=-committerdate  | cut -c2- | fzf --height 40% --reverse
+  git branch --sort=-committerdate  | cut -c2- | fzf --height 40% --reverse --preview="echo {} | xargs -I % sh -c 'git log origin/develop..%'"
 }
 
 commits() {
@@ -135,7 +135,8 @@ _fzf_complete_g-start() {
     fi
 }
 g-start() {
- git fetch && git checkout master && git rebase --autostash && git checkout -b "itai/$1:u/$2" master && git branch --set-upstream-to "origin/master"; 
+ # git fetch && git checkout master && git rebase --autostash && git checkout -b "itai/$1:u/$2" master && git branch --set-upstream-to "origin/master"; 
+ git fetch && git checkout develop && git rebase --autostash && git checkout -b "itai/SCPJM-$1-$2" develop
 }
 
 g-finish() {
@@ -146,7 +147,7 @@ g-finish() {
   # jira transition --noedit 'Ready for review' $JIRA || true;
   
   # sometime previous pr msg is left, no need to use them.
-  rm ~/dev/meetings-ui-web/.git/PULLREQ_EDITMSG
+  rm -f ~/dev/meetings-ui-web/.git/PULLREQ_EDITMSG
 
   echo $DIFF_LOG |cat - ~/pr-template.md > /tmp/out && mv /tmp/out ~/pr-template-with-changes.md;
   hub pull-request --push --browse -F - --edit < ~/pr-template-with-changes.md

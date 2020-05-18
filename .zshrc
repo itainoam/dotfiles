@@ -35,6 +35,7 @@ HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
 # Customize to your needs...
 export PATH=$PATH:$HOME/bin
 
+# export LC_ALL=en_US.UTF-8 
 # Load history (and set to unlimited length)
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
@@ -45,6 +46,9 @@ setopt SHARE_HISTORY
 
 # sets a nice prompt
 PROMPT='%(?.%F{green}√.%F{red}?%?)%f %B%F{240}%1~%f%b %# '
+
+# maybe...?
+export LC_ALL="en_US.UTF-8"
 
 #adds powerline
 #POWERLINE_PATH=$(which powerline-go)
@@ -80,9 +84,31 @@ export NVM_DIR="/Users/itai/.nvm"
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
-# default to starting a new shell in tmux 
+#default to starting a new shell in tmux 
 if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
   tmux attach || tmux new
 
 fi
 
+# Automaticaly switch to version specified in .nvmrc
+autoload -U add-zsh-hook
+load-nvmrc() {
+  local node_version="$(nvm version)"
+  local nvmrc_path="$(nvm_find_nvmrc)"
+
+  if [ -n "$nvmrc_path" ]; then
+    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+    if [ "$nvmrc_node_version" = "N/A" ]; then
+      nvm install
+    elif [ "$nvmrc_node_version" != "$node_version" ]; then
+      nvm use
+    fi
+  elif [ "$node_version" != "$(nvm version default)" ]; then
+    echo "Reverting to nvm default version"
+    nvm use default
+  fi
+}
+add-zsh-hook chpwd load-nvmrc
+load-nvmrc
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
