@@ -38,5 +38,5 @@ nnoremap ]c :action VcsShowNextChangeMarker<cr>
 " Window management
 nnoremap <leader>ws  :split<CR>
 nnoremap <leader>wv :vsplit<CR>
-nnoremap <leader>wq :q<CR>
+nnoremap <leader>wo :action Unsplit<CR>
 nnoremap <leader>ww <c-w><c-w>

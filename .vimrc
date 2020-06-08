@@ -30,6 +30,16 @@ Plug 'rakr/vim-one' " or other package manager
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
 
 
+Plug 'vim-scripts/ReplaceWithRegister'
+
+Plug 'AndrewRadev/splitjoin.vim'
+nmap sj :SplitjoinSplit<cr>
+nmap sk :SplitjoinJoin<cr>
+
+Plug 'junegunn/gv.vim'
+"" Open git log in new tab
+nnoremap <silent> <Leader>gl :GV<CR>
+
 call plug#end()
 
 " markdown
@@ -62,8 +72,8 @@ endif
 
 
 " set background=dark " for the dark version
-set background=light " for the light version
-colorscheme one
+ set background=light " for the light version
+ colorscheme one
 
 " prev color scheme
 "colorscheme seoul256
@@ -124,15 +134,18 @@ inoremap <silent><expr> <c-space> coc#refresh()
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Use `[c` and `]c` for navigate diagnostics
-nmap <silent> [c <Plug>(coc-diagnostic-prev)
-nmap <silent> ]c <Plug>(coc-diagnostic-next)
+nmap <silent> [e <Plug>(coc-diagnostic-prev)
+nmap <silent> ]e <Plug>(coc-diagnostic-next)
+
+" navigate chunks of current buffer
+nmap [c <Plug>(coc-git-prevchunk)
+nmap ]c <Plug>(coc-git-nextchunk)
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <leader>h <Plug>(coc-diagnostic-info)
-nmap <silent> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -149,7 +162,11 @@ endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>re <Plug>(coc-rename)
+" Remap keys for applying codeAction to the current buffer.
+xmap <leader>ac  <Plug>(coc-codeaction-selected)
+nmap <leader>ac  <Plug>(coc-codeaction-selected)
+
 " sets up prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 vmap <leader>cf  <Plug>(coc-format-selected)
@@ -170,6 +187,11 @@ nnoremap <silent> <space>cd  :<C-u>CocList -I symbols<cr>
 " use `:OR` for organize import of current buffer
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
+nmap <silent> <A-k> <Plug>(coc-range-select)
+xmap <silent> <A-k> <Plug>(coc-range-select)
+nmap <silent> <A-j> <Plug>(coc-range-select-backward)
+xmap <silent> <A-j> <Plug>(coc-range-select-backward)
+
 """"""""""""""'
 
 autocmd InsertLeave,WinEnter * set cursorline
@@ -188,20 +210,26 @@ autocmd InsertEnter,WinLeave * set nocursorline
 
 
 nnoremap <leader>fr :History<cr>
-nnoremap <leader><leader> :GFiles<cr>
-nnoremap <leader>gs :GFiles?<cr>
+" nnoremap <leader><leader> :GFiles<cr>
+" nnoremap <leader>gs :GFiles?<cr>
 nnoremap <leader>wv :vsplit<cr>
 nnoremap <leader>qq :close<cr>
 
 " update is like save but only runs when file has change so doesn't change
 nnoremap <leader>s :update<cr>
 
-" 
+" open directory current file
 nnoremap <leader>fd :Ex<cr>
 
 "scrolling 
 nmap <C-j> 3j3<C-e>
 nmap <C-k> 3k3<C-y>
+
+" Mappings using CoCList:
+" Show all diagnostics.
+nnoremap <silent> <leader>fr  :<C-u>CocList mru -A<cr>
+nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
+nnoremap <silent> <leader><leader>  :<C-u>CocList files<cr>
 
 
 " reduce update time for faster gitgutter update
@@ -214,8 +242,8 @@ nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
 
 " Window management
-nnoremap <leader>ws  :split<CR>
 nnoremap <leader>wv :vsplit<CR>
+nnoremap <leader>ws  :split<CR>
 nnoremap <leader>wq :quit<CR>
 nnoremap <leader>ww <c-w><c-w>
 
@@ -294,9 +322,12 @@ if exists('&inccommand')
 endif
 
 " shows insert cursor in iTerm2
-let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+" let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+" let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+" let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+let &t_SI.="\e[5 q" "SI = INSERT mode
+let &t_SR.="\e[4 q" "SR = REPLACE mode
+let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 
 " Maintain undo history between sessions
 set clipboard=unnamed
@@ -336,4 +367,15 @@ command! Sudow :execute 'w suda://%'
 " autosave
 au BufLeave * silent! wall
 
+" Close quickfix/location window
+nnoremap <leader>qq :cclose<bar>lclose<cr>
+
+"" Open new split panes to right and bottom, which feels more natural than Vim’s default:
+set splitright
+set splitbelow
+
+"" Open Gstatus in new tab
+nnoremap <silent> <Leader>gs :tab G<CR>
+"" Close tab
+nnoremap <Leader>tq :tabclose<CR>
 

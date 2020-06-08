@@ -43,7 +43,8 @@ HISTFILESIZE=10000
 SAVEHIST=10000
 setopt APPEND_HISTORY
 setopt SHARE_HISTORY
-
+setopt HIST_IGNORE_ALL_DUPS
+#
 # sets a nice prompt
 PROMPT='%(?.%F{green}√.%F{red}?%?)%f %B%F{240}%1~%f%b %# '
 
@@ -79,16 +80,22 @@ TRAPWINCH() {
 export NVM_DIR="/Users/itai/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
+# have ** use fd and ignore .gitignore files
+ FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+_fzf_compgen_path() {
+  fd --type f . "$1"
+}
+
 # FZF config
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 #default to starting a new shell in tmux 
-if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-  tmux attach || tmux new
+# if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+#  tmux attach || tmux new
 
-fi
+#fi
 
 # Automaticaly switch to version specified in .nvmrc
 autoload -U add-zsh-hook

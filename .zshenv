@@ -25,6 +25,11 @@ alias gitp='git push --dry-run --no-verify && git push'
 alias gre='git reset'
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
+alias gg="cd ~/dev/acs-meetings"
+alias bim="cd ~/dev/meetings-ui-web"
+alias platform="cd ~/dev/acs-sc-web-platform"
+alias edu="cd ~/edu"
+#
 # alias cj="jira view $(git branch | sed -n '/\* /s///p' | grep -oiE 'ui-[0-9]{4}')"
 alias laptop-mount="sudo sshfs -o allow_other,defer_permissions,IdentityFile=/Users/itai/.ssh/id_rsa itai@10.0.17.71:/home/itai/dev /Users/itai/laptop"
 alias laptop-ssh="ssh itai@10.0.17.71"
@@ -136,18 +141,20 @@ _fzf_complete_g-start() {
 }
 g-start() {
  # git fetch && git checkout master && git rebase --autostash && git checkout -b "itai/$1:u/$2" master && git branch --set-upstream-to "origin/master"; 
- git fetch && git checkout develop && git rebase --autostash && git checkout -b "itai/SCPJM-$1-$2" develop
+ git fetch && git checkout master && git rebase --autostash && git checkout -b "itai/SCPJM-$1-$2" master
 }
 
 g-finish() {
   JIRA=$(git branch | sed -n '/\* /s///p' | grep -oiE 'SCPJM-[0-9]{4}');
-  DIFF_LOG=$(git log --pretty=format:%s%n%n%b origin/develop..);
+  DIFF_LOG=$(git log --pretty=format:%s%n%n%b origin/master..);
 
   # jira transition --noedit 'Start Progress' $JIRA || true;
   # jira transition --noedit 'Ready for review' $JIRA || true;
   
-  # sometime previous pr msg is left, no need to use them.
+  # sometime previous pr msg is left, no need to use them..
   rm -f ~/dev/meetings-ui-web/.git/PULLREQ_EDITMSG
+  
+  # TODO: add a jira ticket link as last line in the format of: Resolves: SCPJM-123
 
   echo $DIFF_LOG |cat - ~/pr-template.md > /tmp/out && mv /tmp/out ~/pr-template-with-changes.md;
   hub pull-request --push --browse -F - --edit < ~/pr-template-with-changes.md
