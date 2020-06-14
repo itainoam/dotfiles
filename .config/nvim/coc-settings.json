@@ -1,23 +1,24 @@
-{  
-   "coc.preferences.formatOnSaveFiletypes":[  
-      "css",
-      "Markdown",
-      "javascript",
-      "javascriptreact",
-      "typescript",
-      "json"
-   ],
-   "javascript.suggest.enabled":false,
- //  "list.source.grep.command":"ag",
-   "suggest.autoTrigger":"none",
-   "git.changedSign.text":"▎",
-   "git.addedSign.text":"▎",
-   "git.removedSign.text":"▶",
-   "git.topRemovedSign.text":"◥",
-   "git.changeRemovedSign.text":"▶",
+{
+  "coc.preferences.formatOnSaveFiletypes": [
+    "css",
+    "Markdown",
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "json"
+  ],
+  "session.directory":"~/.vim/session",
+ "javascript.suggest.enabled": false,
+  "suggest.autoTrigger": "none",
+  "git.changedSign.text": "▎",
+  "git.addedSign.text": "▎",
+  "git.removedSign.text": "▶",
+  "git.topRemovedSign.text": "◥",
+  "git.changeRemovedSign.text": "▶",
   "git.addedSign.hlGroup": "GitGutterAdd",
   "git.changedSign.hlGroup": "GitGutterChange",
   "git.removedSign.hlGroup": "GitGutterDelete",
   "git.topRemovedSign.hlGroup": "GitGutterDelete",
-  "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete"
+  "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete",
+  "list.source.branches.defaultArgs": ["--sort", "-committerdate"]
 }

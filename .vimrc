@@ -6,6 +6,7 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+
 call plug#begin('~/.vim/plugged')
 " Declare the list of plugins.
 Plug 'flazz/vim-colorschemes'
@@ -15,6 +16,8 @@ Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-obsession'
 Plug '/usr/local/opt/fzf'
 Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf.vim'
@@ -31,6 +34,7 @@ Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
 
 
 Plug 'vim-scripts/ReplaceWithRegister'
+Plug 'nelstrom/vim-visual-star-search'
 
 Plug 'AndrewRadev/splitjoin.vim'
 nmap sj :SplitjoinSplit<cr>
@@ -145,6 +149,7 @@ nmap ]c <Plug>(coc-git-nextchunk)
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gu <Plug>(coc-references)
 nmap <leader>h <Plug>(coc-diagnostic-info)
 
 " Use K to show documentation in preview window
@@ -216,21 +221,22 @@ nnoremap <leader>wv :vsplit<cr>
 nnoremap <leader>qq :close<cr>
 
 " update is like save but only runs when file has change so doesn't change
-nnoremap <leader>s :update<cr>
+nnoremap <M-s> :update<cr>
 
 " open directory current file
 nnoremap <leader>fd :Ex<cr>
 
-"scrolling 
-nmap <C-j> 3j3<C-e>
-nmap <C-k> 3k3<C-y>
 
 " Mappings using CoCList:
 " Show all diagnostics.
-nnoremap <silent> <leader>fr  :<C-u>CocList mru -A<cr>
+nnoremap <silent> <leader>fr  :<C-u>CocList mru<cr>
 nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
 nnoremap <silent> <leader><leader>  :<C-u>CocList files<cr>
+nnoremap <silent> <leader>gb  :<C-u>CocList branches<cr>
+nnoremap <silent> <leader>gs  :<C-u>CocList gstatus<cr>
+nnoremap <silent> <leader>ss  :<C-u>CocList sessions<cr>
 
+nnoremap <M-x>  :<C-u>CocList commands<cr>
 
 " reduce update time for faster gitgutter update
 set updatetime=200
@@ -245,9 +251,11 @@ nnoremap <silent> ]B :blast<CR>
 nnoremap <leader>wv :vsplit<CR>
 nnoremap <leader>ws  :split<CR>
 nnoremap <leader>wq :quit<CR>
+nnoremap <leader>wo :only<CR>
 nnoremap <leader>ww <c-w><c-w>
+nnoremap <tab>   <c-w>w
+nnoremap <S-tab> <c-w>W
 
-nnoremap <space> za
 let g:highlightedyank_highlight_duration = 200
 
 " Customize fzf colors to match your color scheme
@@ -308,6 +316,12 @@ if !isdirectory($HOME . "/.vim/undodir")
 endif
 set undofile
 set undodir=~/.vim/undodir
+
+
+" creates a session dir if it doesn't exist
+if !isdirectory($HOME . "/.vim/session")
+    call mkdir($HOME . "/.vim/session", "p", 0700)
+endif
 
 " swap files
 if !isdirectory($HOME . "/.vim/swap")
@@ -374,8 +388,21 @@ nnoremap <leader>qq :cclose<bar>lclose<cr>
 set splitright
 set splitbelow
 
+"" Open Gstatus 
+nnoremap <silent> <Leader>GS :G<CR>
 "" Open Gstatus in new tab
-nnoremap <silent> <Leader>gs :tab G<CR>
+"" nnoremap <silent> <Leader>GS :tab G<CR>
 "" Close tab
 nnoremap <Leader>tq :tabclose<CR>
 
+" Auto-clean fugitive buffers
+autocmd BufReadPost fugitive://* set bufhidden=delete
+
+" Map esacpe in terminal. to pass escape use ctrl+v esc
+if has('nvim')
+  tnoremap <Esc> <C-\><C-n>
+  tnoremap <C-v><Esc> <Esc>
+endif
+
+" Auto-resize splits when Vim gets resized.
+autocmd VimResized * wincmd =
