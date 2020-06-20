@@ -1,5 +1,6 @@
 let mapleader = ' ' " map leader to space
 
+" Plug install
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -24,6 +25,9 @@ Plug 'junegunn/fzf.vim'
 " Plug 'airblade/vim-rooter' " no need because using sessions
 Plug 'wellle/targets.vim'
 
+Plug '907th/vim-auto-save'
+
+"
 " Plug 'vimwiki/vimwiki'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
@@ -31,7 +35,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'lambdalisue/suda.vim' " for editing with sudo in nvim
 
 Plug 'rakr/vim-one' " or other package manager
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 
 Plug 'vim-scripts/ReplaceWithRegister'
@@ -107,21 +111,26 @@ set title
 set statusline=
 set statusline+=%#DiffAdd#%{(mode()=='n')?'\ \ NORMAL\ ':''}
 set statusline+=%#DiffChange#%{(mode()=='i')?'\ \ INSERT\ ':''}
-set statusline+=%#DiffDelete#%{(mode()=='r')?'\ \ RPLACE\ ':''}
+set statusline+=%#DiffDelete#%{(mode()=='r')?'\ \ REPLACE\ ':''}
 set statusline+=%#Cursor#%{(mode()=='v')?'\ \ VISUAL\ ':''}
-set statusline+=%#CursorIM#     " colour
-set statusline+=%{coc#status()}
-set statusline+=%#CursorIM#     " colour
+set statusline+=%2*\                     " blank char
+set statusline+=\ %t\                   " short file name
+set statusline+=%2*\                     " blank char
+set statusline+=%#CursorLine#   " colour
+set statusline+=%{matchstr(get(v:,'this_session',''),'[^/]*$')}   "session file
 set statusline+=%R                        " readonly flag
 set statusline+=%M                        " modified [+] flag
 set statusline+=%#Cursor#               " colour
 set statusline+=%#CursorLine#     " colour
 set statusline+=%=                          " right align
-set statusline+=%#CursorLine#   " colour
-set statusline+=\ %t\                   " short file name
 set statusline+=%#Visual#       " colour
-set statusline+=%{get(g:,'coc_git_status','')}%{get(b:,'coc_git_status','')}
-set statusline+=%#Cursor#       " colour
+set statusline+=%2*\                     " blank char
+set statusline+=%{get(g:,'coc_git_status','')}\ %{get(b:,'coc_git_status','')}
+set statusline+=%2*\                     " blank char
+set statusline+=%#Visual#       " colour
+set statusline+=%{coc#status()}
+set statusline+=%2*\                     " blank char
+set statusline+=%#CursorLine#       " colour
 set statusline+=\ %3p%%\                " percentage
 """
 
@@ -239,7 +248,7 @@ nnoremap <leader>fd :Ex<cr>
 " Show all diagnostics.
 nnoremap <silent> <leader>fr  :<C-u>CocList mru<cr>
 nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
-nnoremap <silent> <leader><leader>  :<C-u>CocList files<cr>
+nnoremap <silent> <leader>ff  :<C-u>CocList files<cr>
 nnoremap <silent> <leader>gb  :<C-u>CocList branches<cr>
 nnoremap <silent> <leader>gc  :<C-u>CocList gstatus<cr>
 nnoremap <silent> <leader>ss  :<C-u>CocList sessions<cr>
@@ -260,7 +269,7 @@ nnoremap <leader>wv :vsplit<CR>
 nnoremap <leader>ws  :split<CR>
 nnoremap <leader>wq :quit<CR>
 nnoremap <leader>wo :only<CR>
-nnoremap <leader>ww <c-w><c-w>
+" nnoremap <leader>ww <c-w><c-w>
 nnoremap <tab>   <c-w>w
 nnoremap <S-tab> <c-w>W
 
@@ -386,9 +395,6 @@ nnoremap <leader>// :Grep
 " write with sudo
 command! Sudow :execute 'w suda://%' 
 
-" autosave
-au BufLeave * silent! wall
-
 " Close quickfix/location window
 nnoremap <leader>qq :cclose<bar>lclose<cr>
 
@@ -429,10 +435,17 @@ inoremap <left> <nop>
 inoremap <right> <nop>
 
 "" edit vimrc
-nnoremap <leader>ve :vsplit ~/.vimrc<cr>
+nnoremap <leader>ve :e ~/.vimrc<cr>
 nnoremap <leader>vs :source ~/.vimrc<cr>
 nnoremap <leader>vh "zyiw:exe "h ".@z.""<cr>
 vnoremap <leader>vh "zy:exe "h ".@z.""<cr>
 
 "" open help in vertical split
 autocmd FileType help wincmd L
+
+
+let g:auto_save        = 1
+let g:auto_save_silent = 1
+let g:auto_save_events = ["FocusLost","CursorHold","CursorHoldI"]
+set updatetime=2000
+
