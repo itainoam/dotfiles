@@ -20,5 +20,7 @@
   "git.removedSign.hlGroup": "GitGutterDelete",
   "git.topRemovedSign.hlGroup": "GitGutterDelete",
   "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete",
-  "list.source.branches.defaultArgs": ["--sort", "-committerdate"]
+  "list.source.branches.defaultArgs": ["--sort", "-committerdate"],
+  "tsserver.npm": "/usr/local/bin/npm"
+
 }

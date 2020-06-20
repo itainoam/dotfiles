@@ -21,8 +21,9 @@ Plug 'tpope/vim-obsession'
 Plug '/usr/local/opt/fzf'
 Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf.vim'
-Plug 'mattn/emmet-vim'
-Plug 'airblade/vim-rooter'
+" Plug 'airblade/vim-rooter' " no need because using sessions
+Plug 'wellle/targets.vim'
+
 " Plug 'vimwiki/vimwiki'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
@@ -37,8 +38,8 @@ Plug 'vim-scripts/ReplaceWithRegister'
 Plug 'nelstrom/vim-visual-star-search'
 
 Plug 'AndrewRadev/splitjoin.vim'
-nmap sj :SplitjoinSplit<cr>
-nmap sk :SplitjoinJoin<cr>
+nnoremap sj :SplitjoinSplit<cr>
+nnoremap sk :SplitjoinJoin<cr>
 
 Plug 'junegunn/gv.vim'
 "" Open git log in new tab
@@ -102,19 +103,26 @@ set signcolumn=yes
 set title
 
 """"
-"status line. stolen from https://github.com/junegunn/dotfiles/blob/master/vimrc
-function! s:statusline_expr()
-  let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
-  let ro  = "%{&readonly ? '[RO] ' : ''}"
-  let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
-  let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
-  let sep = ' %= '
-  let pos = ' %-12(%l : %c%V%) '
-  let pct = ' %P'
-
-  return '[%n] %F %<'.mod.ro.ft.fug.sep.pos.'%*'.pct
-endfunction
-let &statusline = s:statusline_expr()
+"" Todo: remove color of inactive window
+set statusline=
+set statusline+=%#DiffAdd#%{(mode()=='n')?'\ \ NORMAL\ ':''}
+set statusline+=%#DiffChange#%{(mode()=='i')?'\ \ INSERT\ ':''}
+set statusline+=%#DiffDelete#%{(mode()=='r')?'\ \ RPLACE\ ':''}
+set statusline+=%#Cursor#%{(mode()=='v')?'\ \ VISUAL\ ':''}
+set statusline+=%#CursorIM#     " colour
+set statusline+=%{coc#status()}
+set statusline+=%#CursorIM#     " colour
+set statusline+=%R                        " readonly flag
+set statusline+=%M                        " modified [+] flag
+set statusline+=%#Cursor#               " colour
+set statusline+=%#CursorLine#     " colour
+set statusline+=%=                          " right align
+set statusline+=%#CursorLine#   " colour
+set statusline+=\ %t\                   " short file name
+set statusline+=%#Visual#       " colour
+set statusline+=%{get(g:,'coc_git_status','')}%{get(b:,'coc_git_status','')}
+set statusline+=%#Cursor#       " colour
+set statusline+=\ %3p%%\                " percentage
 """
 
 " Use tab for trigger completion with characters ahead and navigate.
@@ -233,7 +241,7 @@ nnoremap <silent> <leader>fr  :<C-u>CocList mru<cr>
 nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
 nnoremap <silent> <leader><leader>  :<C-u>CocList files<cr>
 nnoremap <silent> <leader>gb  :<C-u>CocList branches<cr>
-nnoremap <silent> <leader>gs  :<C-u>CocList gstatus<cr>
+nnoremap <silent> <leader>gc  :<C-u>CocList gstatus<cr>
 nnoremap <silent> <leader>ss  :<C-u>CocList sessions<cr>
 
 nnoremap <M-x>  :<C-u>CocList commands<cr>
@@ -389,7 +397,7 @@ set splitright
 set splitbelow
 
 "" Open Gstatus 
-nnoremap <silent> <Leader>GS :G<CR>
+nnoremap <silent> <Leader>gs :G<CR>
 "" Open Gstatus in new tab
 "" nnoremap <silent> <Leader>GS :tab G<CR>
 "" Close tab
@@ -406,3 +414,25 @@ endif
 
 " Auto-resize splits when Vim gets resized.
 autocmd VimResized * wincmd =
+
+
+"""" TEMP """""
+" Disable Arrow keys in Normal mode
+noremap <up> <nop>
+noremap <down> <nop>
+noremap <left> <nop>
+noremap <right> <nop>
+" Disable Arrow keys in Insert mode
+inoremap <up> <nop>
+inoremap <down> <nop>
+inoremap <left> <nop>
+inoremap <right> <nop>
+
+"" edit vimrc
+nnoremap <leader>ve :vsplit ~/.vimrc<cr>
+nnoremap <leader>vs :source ~/.vimrc<cr>
+nnoremap <leader>vh "zyiw:exe "h ".@z.""<cr>
+vnoremap <leader>vh "zy:exe "h ".@z.""<cr>
+
+"" open help in vertical split
+autocmd FileType help wincmd L
