@@ -19,6 +19,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-eunuch'
 Plug '/usr/local/opt/fzf'
 Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf.vim'
@@ -340,13 +341,15 @@ if !isdirectory($HOME . "/.vim/session")
     call mkdir($HOME . "/.vim/session", "p", 0700)
 endif
 
-" swap files
-if !isdirectory($HOME . "/.vim/swap")
-    call mkdir($HOME . "/.vim/swap", "p", 0700)
-endif
-set directory   =~/.vim/swap
-set updatecount =100
-set shortmess=A "disables annoying swap warnings
+" swap files: decided to disable them instead of saving them someplace
+set noswapfile
+" if !isdirectory($HOME . "/.vim/swap")
+"     call mkdir($HOME . "/.vim/swap", "p", 0700)
+" endif
+" set directory   =~/.vim/swap
+" set updatecount =100
+" set shortmess=A "disables annoying swap warnings
+
 
 if exists('&inccommand')
   set inccommand=split
@@ -448,4 +451,3 @@ let g:auto_save        = 1
 let g:auto_save_silent = 1
 let g:auto_save_events = ["FocusLost","CursorHold","CursorHoldI"]
 set updatetime=2000
-
