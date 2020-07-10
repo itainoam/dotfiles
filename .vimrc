@@ -27,8 +27,8 @@ Plug 'junegunn/fzf.vim'
 Plug 'wellle/targets.vim'
 
 Plug '907th/vim-auto-save'
+Plug 'kassio/neoterm'
 
-"
 " Plug 'vimwiki/vimwiki'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
@@ -156,17 +156,19 @@ inoremap <silent><expr> <c-space> coc#refresh()
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Use `[c` and `]c` for navigate diagnostics
-nmap <silent> [e <Plug>(coc-diagnostic-prev)
-nmap <silent> ]e <Plug>(coc-diagnostic-next)
+nmap <silent> [e <Plug>(coc-diagnostic-prev-error)
+nmap <silent> ]e <Plug>(coc-diagnostic-next-error)
 
 " navigate chunks of current buffer
 nmap [c <Plug>(coc-git-prevchunk)
 nmap ]c <Plug>(coc-git-nextchunk)
+nmap gh <Plug>(coc-git-chunkinfo)
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
+"" gu shadows vim 
 nmap <silent> gu <Plug>(coc-references)
 nmap <leader>h <Plug>(coc-diagnostic-info)
 
@@ -270,11 +272,11 @@ nnoremap <leader>wv :vsplit<CR>
 nnoremap <leader>ws  :split<CR>
 nnoremap <leader>wq :quit<CR>
 nnoremap <leader>wo :only<CR>
-" nnoremap <leader>ww <c-w><c-w>
-nnoremap <tab>   <c-w>w
-nnoremap <S-tab> <c-w>W
 
-let g:highlightedyank_highlight_duration = 200
+nnoremap <leader>ww <c-w><c-w>
+nnoremap <A-tab> <c-w>w
+
+let g:highlightedyank_highlight_duration = 80
 
 " Customize fzf colors to match your color scheme
 
@@ -373,28 +375,54 @@ autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checkti
 autocmd FileChangedShellPost *
   \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
 
+"--------------------
+" Using native vim grep for searching. disabled because coclist was more
+" easier
 " The Silver Searcher
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
 
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+" if executable('ag')
+"   " Use ag over grep
+"   set grepprg=ag\ --nogroup\ --nocolor
 
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-endif
+"   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+"   let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 
-" Silver searcher - Ag
-if executable('ag')
-  let &grepprg = 'ag --nogroup --nocolor --column'
-else
-  let &grepprg = 'grep -rn $* *'
-endif
-command! -nargs=1 -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
+"   " ag is fast enough that CtrlP doesn't need to cache
+"   let g:ctrlp_use_caching = 0
+" endif
 
-nnoremap <leader>// :Grep 
+" " Silver searcher - Ag
+" if executable('ag')
+"   let &grepprg = 'ag --nogroup --nocolor --column'
+" else
+"   let &grepprg = 'grep -rn $* *'
+" endif
+" command! -nargs=1 -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
 
+" nnoremap <leader>// :Grep 
+" --------------------
+" global search. 
+" can use -t scss to search for scss files.
+" to search only in some directories just change cwd directory
+" changing back to git repo directory is :Gcd
+nnoremap <leader>// :CocList --auto-preview grep -S
+nnoremap <leader>qq :cclose<bar>lclose<cr>
+"
+" Change directory to current file directory
+command! Fcd :execute 'cd %:p:h' 
+
+""" neoterm """
+" Use gx{text-object} in normal mode
+nmap gx <Plug>(neoterm-repl-send)
+nmap gxx <Plug>(neoterm-repl-send-line)
+" Send selected contents in visual mode.
+xmap gx <Plug>(neoterm-repl-send)
+" nnoremap <leader>tt :bo Ttoggle<cr>
+nnoremap <A-`> :bo Ttoggle<cr>
+let g:neoterm_autoinsert = 1
+let g:neoterm_size = 25
+
+"
 " write with sudo
 command! Sudow :execute 'w suda://%' 
 
@@ -417,8 +445,9 @@ autocmd BufReadPost fugitive://* set bufhidden=delete
 
 " Map esacpe in terminal. to pass escape use ctrl+v esc
 if has('nvim')
-  tnoremap <Esc> <C-\><C-n>
-  tnoremap <C-v><Esc> <Esc>
+  " tnoremap <Esc> <C-\><C-n>
+  tnoremap <A-`> <C-\><C-n>:bo Ttoggle<cr>
+  tnoremap <A-a><A-a> <C-\><C-n>
 endif
 
 " Auto-resize splits when Vim gets resized.
@@ -449,5 +478,5 @@ autocmd FileType help wincmd L
 
 let g:auto_save        = 1
 let g:auto_save_silent = 1
-let g:auto_save_events = ["FocusLost","CursorHold","CursorHoldI"]
+let g:auto_save_events = ["FocusLost","CursorHold","CursorHoldI","BufLeave"]
 set updatetime=2000
