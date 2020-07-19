@@ -20,11 +20,27 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-eunuch'
-Plug '/usr/local/opt/fzf'
+Plug 'tpope/vim-unimpaired'
 Plug 'sheerun/vim-polyglot'
-Plug 'junegunn/fzf.vim'
 " Plug 'airblade/vim-rooter' " no need because using sessions
+"
+"""" text objects """""
+
+" Plug 'kana/vim-textobj-user'
+" Plug 'kana/vim-textobj-entire'
+" Plug 'kana/vim-textobj-line'
+
 Plug 'wellle/targets.vim'
+" Plug 'wellle/line-targets.vim'
+"""""" targets.vim """""
+"" free l so I can map it to line.
+" let g:targets_nl = 'nN'
+" "" maps l to line object
+" autocmd User targets#mappings#user call targets#mappings#extend({
+"             \ 'l': {'line': [{'c': 1}]},
+"             \ })
+""
+"""""""""""""""""""""""""
 
 Plug '907th/vim-auto-save'
 Plug 'kassio/neoterm'
@@ -32,7 +48,6 @@ Plug 'kassio/neoterm'
 " Plug 'vimwiki/vimwiki'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
-Plug 'tpope/vim-unimpaired'
 Plug 'lambdalisue/suda.vim' " for editing with sudo in nvim
 
 Plug 'rakr/vim-one' " or other package manager
@@ -41,14 +56,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'vim-scripts/ReplaceWithRegister'
 Plug 'nelstrom/vim-visual-star-search'
-
-Plug 'AndrewRadev/splitjoin.vim'
-nnoremap sj :SplitjoinSplit<cr>
-nnoremap sk :SplitjoinJoin<cr>
-
-Plug 'junegunn/gv.vim'
-"" Open git log in new tab
-nnoremap <silent> <Leader>gl :GV<CR>
 
 call plug#end()
 
@@ -91,6 +98,8 @@ endif
 
 """""""""""""""""""
 """ coc
+"" Adds fold command
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
 " Better display for messages
 set cmdheight=2
@@ -254,7 +263,13 @@ nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
 nnoremap <silent> <leader>ff  :<C-u>CocList files<cr>
 nnoremap <silent> <leader>gb  :<C-u>CocList branches<cr>
 nnoremap <silent> <leader>gc  :<C-u>CocList gstatus<cr>
+
+
+" Sessions shortcuts
 nnoremap <silent> <leader>ss  :<C-u>CocList sessions<cr>
+nnoremap <leader>sb :so ~/.vim/session/bim-meetings.vim  <cr>
+nnoremap <leader>sa :so ~/.vim/session/acs-meetings.vim  <cr>
+nnoremap <leader>sn :so ~/.vim/session/nf.vim  <cr>
 
 nnoremap <M-x>  :<C-u>CocList commands<cr>
 
@@ -302,6 +317,7 @@ autocmd BufRead,BufNewFile * setlocal signcolumn=yes
 
 syntax enable
 set number
+set relativenumber  
 set wildmenu
 set wildmode=longest:full,full
 set timeoutlen=1000 ttimeoutlen=0 "elimentates delay when getting in and out of cmd
@@ -328,7 +344,7 @@ filetype plugin indent on  " for vimwiki
 set foldenable          " enable folding
 set foldlevelstart=10   " open most folds by default
 set foldnestmax=10      " 10 nested fold max
-set foldmethod=indent
+" set foldmethod=indent
 
 " Maintain undo history between sessions
 if !isdirectory($HOME . "/.vim/undodir")
@@ -403,9 +419,10 @@ autocmd FileChangedShellPost *
 " --------------------
 " global search. 
 " can use -t scss to search for scss files.
+" example: CocList grep MeetingDescription -t scss
 " to search only in some directories just change cwd directory
 " changing back to git repo directory is :Gcd
-nnoremap <leader>// :CocList --auto-preview grep -S
+nnoremap <leader>// :CocList --auto-preview grep -S 
 nnoremap <leader>qq :cclose<bar>lclose<cr>
 "
 " Change directory to current file directory
@@ -422,7 +439,13 @@ nnoremap <A-`> :bo Ttoggle<cr>
 let g:neoterm_autoinsert = 1
 let g:neoterm_size = 25
 
-"
+" Map esacpe in terminal. to pass escape use ctrl+v esc
+if has('nvim')
+  " tnoremap <Esc> <C-\><C-n>
+  tnoremap <A-`> <C-\><C-n>:bo Ttoggle<cr>
+  tnoremap <A-a><A-a> <C-\><C-n>
+endif
+
 " write with sudo
 command! Sudow :execute 'w suda://%' 
 
@@ -439,22 +462,20 @@ nnoremap <silent> <Leader>gs :G<CR>
 "" nnoremap <silent> <Leader>GS :tab G<CR>
 "" Close tab
 nnoremap <Leader>tq :tabclose<CR>
+nnoremap <Leader>tn :tabnew<CR>
 
 " Auto-clean fugitive buffers
 autocmd BufReadPost fugitive://* set bufhidden=delete
 
-" Map esacpe in terminal. to pass escape use ctrl+v esc
-if has('nvim')
-  " tnoremap <Esc> <C-\><C-n>
-  tnoremap <A-`> <C-\><C-n>:bo Ttoggle<cr>
-  tnoremap <A-a><A-a> <C-\><C-n>
-endif
 
 " Auto-resize splits when Vim gets resized.
 autocmd VimResized * wincmd =
 
 
 """" TEMP """""
+" Disable visual mode as a practice
+noremap v <nop>
+noremap V <nop>
 " Disable Arrow keys in Normal mode
 noremap <up> <nop>
 noremap <down> <nop>
@@ -467,6 +488,7 @@ inoremap <left> <nop>
 inoremap <right> <nop>
 
 "" edit vimrc
+" TODO: replace edit vimrc with global mark
 nnoremap <leader>ve :e ~/.vimrc<cr>
 nnoremap <leader>vs :source ~/.vimrc<cr>
 nnoremap <leader>vh "zyiw:exe "h ".@z.""<cr>
@@ -480,3 +502,16 @@ let g:auto_save        = 1
 let g:auto_save_silent = 1
 let g:auto_save_events = ["FocusLost","CursorHold","CursorHoldI","BufLeave"]
 set updatetime=2000
+
+" toggle relative lines with c-l
+nnoremap <C-L> :set rnu!<cr>
+
+
+" using N instead of l(ast) so that can map sentence
+let g:targets_nl = 'nN'
+"text objects: buffer and line
+xnoremap <silent> ie gg0oG$
+onoremap <silent> ie :<C-U>execute "normal! m`"<Bar>keepjumps normal! ggVG<CR>
+xnoremap <silent> il <Esc>^vg_
+onoremap <silent> il :<C-U>normal! ^vg_<CR>
+
