@@ -12,7 +12,6 @@ call plug#begin('~/.vim/plugged')
 " Declare the list of plugins.
 Plug 'flazz/vim-colorschemes'
 Plug 'metakirby5/codi.vim'
-Plug 'machakann/vim-highlightedyank'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
@@ -164,7 +163,8 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-" Use `[c` and `]c` for navigate diagnostics
+" COMMENT: currently shadows [e to exchange lines. can be remove and replaced
+" with native `[c` and `]c` for navigate diagnostics
 nmap <silent> [e <Plug>(coc-diagnostic-prev-error)
 nmap <silent> ]e <Plug>(coc-diagnostic-next-error)
 
@@ -291,8 +291,6 @@ nnoremap <leader>wo :only<CR>
 nnoremap <leader>ww <c-w><c-w>
 nnoremap <A-tab> <c-w>w
 
-let g:highlightedyank_highlight_duration = 80
-
 " Customize fzf colors to match your color scheme
 
 let g:fzf_colors =
@@ -381,9 +379,6 @@ let &t_SI.="\e[5 q" "SI = INSERT mode
 let &t_SR.="\e[4 q" "SR = REPLACE mode
 let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 
-" Maintain undo history between sessions
-set clipboard=unnamed
-
 " Auto reload changed files 
 " (source https://unix.stackexchange.com/a/383044 )
 autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checktime | endif
@@ -427,6 +422,9 @@ nnoremap <leader>qq :cclose<bar>lclose<cr>
 "
 " Change directory to current file directory
 command! Fcd :execute 'cd %:p:h' 
+
+" Yank till end of line
+nnoremap Y y$
 
 """ neoterm """
 " Use gx{text-object} in normal mode
@@ -476,6 +474,7 @@ autocmd VimResized * wincmd =
 " Disable visual mode as a practice
 noremap v <nop>
 noremap V <nop>
+" noremap V <nop>
 " Disable Arrow keys in Normal mode
 noremap <up> <nop>
 noremap <down> <nop>
@@ -515,3 +514,17 @@ onoremap <silent> ie :<C-U>execute "normal! m`"<Bar>keepjumps normal! ggVG<CR>
 xnoremap <silent> il <Esc>^vg_
 onoremap <silent> il :<C-U>normal! ^vg_<CR>
 
+" use system clipboard
+" set clipboard=unnamed
+" yank history 
+nnoremap <silent> <space>ch  :<C-u>CocList yank<cr>
+" " " Copy to clipboard
+vnoremap  <leader>y  "+y
+nnoremap  <leader>Y  "+yg_
+nnoremap  <leader>y  "+y
+nnoremap  <leader>yy  "+yy
+" " Paste from clipboard
+nnoremap <leader>p "+p
+nnoremap <leader>P "+P
+vnoremap <leader>p "+p
+vnoremap <leader>P "+P

@@ -7,9 +7,10 @@
     "typescript",
     "json"
   ],
-  "session.directory":"~/.vim/session",
- "javascript.suggest.enabled": false,
+  "session.directory": "~/.vim/session",
+  "javascript.suggest.enabled": false,
   "suggest.autoTrigger": "none",
+  "yank.highlight.duration":"80",
   "git.changedSign.text": "▎",
   "git.addedSign.text": "▎",
   "git.removedSign.text": "▶",
@@ -21,6 +22,6 @@
   "git.topRemovedSign.hlGroup": "GitGutterDelete",
   "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete",
   "list.source.branches.defaultArgs": ["--sort", "-committerdate"],
-  "tsserver.npm": "/usr/local/bin/npm"
-
+  "tsserver.npm": "/usr/local/bin/npm",
+  "list.source.grep.excludePatterns": ["**/package-lock.json"]
 }
