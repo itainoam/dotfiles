@@ -16,11 +16,14 @@ Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
+Plug 'sodapopcan/vim-twiggy' " fugitive plugin for branches
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-unimpaired'
 Plug 'sheerun/vim-polyglot'
+Plug 'rhysd/git-messenger.vim'
+Plug 'mhinz/vim-grepper'
 " Plug 'airblade/vim-rooter' " no need because using sessions
 "
 """" text objects """""
@@ -54,7 +57,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 
 Plug 'vim-scripts/ReplaceWithRegister'
-Plug 'nelstrom/vim-visual-star-search'
+Plug 'haya14busa/is.vim'
 
 call plug#end()
 
@@ -98,8 +101,8 @@ endif
 """""""""""""""""""
 """ coc
 "" Adds fold command
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
+"" for folding these are the useful commands:  zM, zR, zO, zC
+command! -nargs=? Fold :call     CocAction('fold', <f-args>) 
 " Better display for messages
 set cmdheight=2
 
@@ -134,7 +137,7 @@ set statusline+=%#CursorLine#     " colour
 set statusline+=%=                          " right align
 set statusline+=%#Visual#       " colour
 set statusline+=%2*\                     " blank char
-set statusline+=%{get(g:,'coc_git_status','')}\ %{get(b:,'coc_git_status','')}
+set statusline+=%{get(g:,'coc_git_status','')}\ %{get(b:,'coc_git_status','')} "TODO: something about Twiggy breaks this. Considering giving up on twiggy
 set statusline+=%2*\                     " blank char
 set statusline+=%#Visual#       " colour
 set statusline+=%{coc#status()}
@@ -206,7 +209,8 @@ command! -nargs=0 Prettier :CocCommand prettier.formatFile
 vmap <leader>cf  <Plug>(coc-format-selected)
 map <leader>cf <Plug>(coc-format)
 
-"hide search highlight
+"COMMENT: was deperected by using haya14busa/is.vim. consider removing
+"hide search highlight 
 nnoremap <leader><esc> :noh<cr>
 
 " Create mappings for function text object, requires document symbols feature of languageserver.
@@ -247,7 +251,6 @@ nnoremap <leader>fr :History<cr>
 " nnoremap <leader><leader> :GFiles<cr>
 " nnoremap <leader>gs :GFiles?<cr>
 nnoremap <leader>wv :vsplit<cr>
-nnoremap <leader>qq :close<cr>
 
 " update is like save but only runs when file has change so doesn't change
 nnoremap <M-s> :update<cr>
@@ -261,7 +264,6 @@ nnoremap <leader>fd :Ex<cr>
 nnoremap <silent> <leader>fr  :<C-u>CocList mru<cr>
 nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
 nnoremap <silent> <leader>ff  :<C-u>CocList files<cr>
-nnoremap <silent> <leader>gb  :<C-u>CocList branches<cr>
 nnoremap <silent> <leader>gc  :<C-u>CocList gstatus<cr>
 
 
@@ -417,8 +419,11 @@ autocmd FileChangedShellPost *
 " example: CocList grep MeetingDescription -t scss
 " to search only in some directories just change cwd directory
 " changing back to git repo directory is :Gcd
-nnoremap <leader>// :CocList --auto-preview grep -S 
+" nnoremap <leader>// :CocList --auto-preview grep -S 
+
+
 nnoremap <leader>qq :cclose<bar>lclose<cr>
+nnoremap <leader>qe :copen<bar>lclose<cr>
 "
 " Change directory to current file directory
 command! Fcd :execute 'cd %:p:h' 
@@ -499,7 +504,7 @@ autocmd FileType help wincmd L
 
 let g:auto_save        = 1
 let g:auto_save_silent = 1
-let g:auto_save_events = ["FocusLost","CursorHold","CursorHoldI","BufLeave"]
+let g:auto_save_events = ["FocusLost","CursorHold","BufLeave"]
 set updatetime=2000
 
 " toggle relative lines with c-l
@@ -507,15 +512,16 @@ nnoremap <C-L> :set rnu!<cr>
 
 
 " using N instead of l(ast) so that can map sentence
-let g:targets_nl = 'nN'
+" mapping this can causes errors
+" let g:targets_nl = 'nN'
 "text objects: buffer and line
 xnoremap <silent> ie gg0oG$
 onoremap <silent> ie :<C-U>execute "normal! m`"<Bar>keepjumps normal! ggVG<CR>
-xnoremap <silent> il <Esc>^vg_
-onoremap <silent> il :<C-U>normal! ^vg_<CR>
+xnoremap <silent> ii <Esc>^vg_
+onoremap <silent> ii :<C-U>normal! ^vg_<CR>
 
 " use system clipboard
-" set clipboard=unnamed
+set clipboard=unnamed
 " yank history 
 nnoremap <silent> <space>ch  :<C-u>CocList yank<cr>
 " " " Copy to clipboard
@@ -528,3 +534,46 @@ nnoremap <leader>p "+p
 nnoremap <leader>P "+P
 vnoremap <leader>p "+p
 vnoremap <leader>P "+P
+
+" git messenger
+let g:git_messenger_no_default_mappings = 1
+nmap <Leader>gm <Plug>(git-messenger)
+
+" git twiggy settings
+let g:twiggy_group_locals_by_slash = 0
+let g:twiggy_local_branch_sort = 'mru'
+let g:twiggy_remote_branch_sort = 'date'
+let g:twiggy_split_method = 'leftabove'
+let g:twiggy_adapt_columns = 1
+
+nnoremap <leader>gb :Twiggy<cr> J
+
+" Split line (complements builtin J to join)
+nmap sj :SplitjoinSplit<cr>
+nmap sk :SplitjoinJoin<cr>
+
+" vim-grepper 
+" example for searching in sass files: --type css Loader 
+nmap gs  <plug>(GrepperOperator)
+xmap gs  <plug>(GrepperOperator)
+nnoremap <leader>// :Grepper <cr>  
+let g:grepper               = {}
+let g:grepper.tools         = ['rg', 'git']
+" redefines the rg with defaults and only adds smart-case
+let g:grepper.rg = {
+    \ 'grepprg': 'rg -H --smart-case --no-heading --vimgrep' . (has('win32') ? ' $* .' : ''),
+    \ 'grepformat': '%f:%l:%c:%m,%f',
+    \ 'escape':      '\^$.*+?()[]{}|' ,
+    \ }
+let g:grepper.highlight = 1
+"" Grep for TODO
+command! Todo Grepper -noprompt -tool git -query -E '(TODO|FIXME|XXX):'
+
+function! ToggleQuickFix()
+    if empty(filter(getwininfo(), 'v:val.quickfix'))
+        copen
+    else
+        cclose
+    endif
+endfunction
+nnoremap <leader>wf :call ToggleQuickFix()<cr>
