@@ -52,8 +52,10 @@ fzf-down() {
 
 codi() {
     local syntax="${1:-javascript}"
+    shift
     vim -c \
         "let g:startify_disable_at_vimenter = 1 |\
+        let g:codi#interpreters = { 'javascript': {'width': 70, 'rightalign':0},} |\
         set bt=nofile ls=0 noru nonu nornu |\
         hi ColorColumn ctermbg=NONE |\
         hi VertSplit ctermbg=NONE |\
@@ -139,20 +141,32 @@ _fzf_complete_g-start() {
         eval "zle ${fzf_default_completion:-expand-or-complete}"
     fi
 }
+
 g-start() {
- # git fetch && git checkout master && git rebase --autostash && git checkout -b "itai/$1:u/$2" master && git branch --set-upstream-to "origin/master"; 
- git fetch && git checkout master && git rebase --autostash && git checkout -b "itai/SCPJM-$1-$2" master
+  SOURCE_BRANCH="master"
+  # workaround because main branch in meetings is develop
+  REMOTE_URL=$(git config --get remote.origin.url)
+  if [ "$REMOTE_URL" = "https://git.autodesk.com/BIM360/meetings-ui-web.git" ]; then
+    SOURCE_BRANCH="develop"
+  fi
+  git fetch && git checkout $SOURCE_BRANCH && git rebase --autostash && git checkout -b "itai/SCPJM-$1-$2" $SOURCE_BRANCH 
 }
 
 g-finish() {
   JIRA=$(git branch | sed -n '/\* /s///p' | grep -oiE 'SCPJM-[0-9]{4}');
-  DIFF_LOG=$(git log --pretty=format:%s%n%n%b origin/master..);
-
+  REMOTE_URL=$(git config --get remote.origin.url)
+  
+  # workaround because main branch in meetings is develop
+  if [ "$REMOTE_URL" = "https://git.autodesk.com/BIM360/meetings-ui-web.git" ]; then
+    DIFF_LOG=$(git log --pretty=format:%s%n%n%b origin/develop..);
+    # sometime previous pr msg is left, no need to use them..
+    rm -f ~/dev/meetings-ui-web/.git/PULLREQ_EDITMSG
+  else
+    rm -f ~/dev/acs-meetings/.git/PULLREQ_EDITMSG
+    DIFF_LOG=$(git log --pretty=format:%s%n%n%b origin/master..);
+  fi
   # jira transition --noedit 'Start Progress' $JIRA || true;
   # jira transition --noedit 'Ready for review' $JIRA || true;
-  
-  # sometime previous pr msg is left, no need to use them..
-  rm -f ~/dev/meetings-ui-web/.git/PULLREQ_EDITMSG
   
   # TODO: add a jira ticket link as last line in the format of: Resolves: SCPJM-123
 

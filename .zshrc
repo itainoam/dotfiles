@@ -119,3 +119,13 @@ load-nvmrc() {
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+# Test if the shell is launched in Neovim's Terminal
+# prevent error: E117: Unknown function: stdpath
+# source:https://github.com/neovim/neovim/issues/9960
+if [[ -n "${NVIM_LISTEN_ADDRESS}" ]]
+then
+    # TODO update the path each time Vim has a major upgrade
+    export VIMRUNTIME=/usr/share/vim/vim81
+fi
