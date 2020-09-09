@@ -13,7 +13,6 @@ call plug#begin('~/.vim/plugged')
 Plug 'flazz/vim-colorschemes'
 Plug 'metakirby5/codi.vim'
 Plug 'tpope/vim-vinegar'
-Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'sodapopcan/vim-twiggy' " fugitive plugin for branches
@@ -24,6 +23,17 @@ Plug 'tpope/vim-unimpaired'
 Plug 'sheerun/vim-polyglot'
 Plug 'rhysd/git-messenger.vim'
 Plug 'mhinz/vim-grepper'
+Plug 'tpope/vim-rhubarb'
+Plug 'romainl/vim-qf'
+Plug 'simnalamburt/vim-mundo'
+Plug 'tommcdo/vim-exchange'
+Plug 'machakann/vim-highlightedyank'
+Plug 'psliwka/vim-smoothie' " smooth scrolling with c-d, c-u
+Plug 'machakann/vim-sandwich' " smooth scrolling with c-d, c-u
+Plug 'padde/jump.vim'
+
+
+
 " Plug 'airblade/vim-rooter' " no need because using sessions
 "
 """" text objects """""
@@ -47,12 +57,12 @@ Plug 'wellle/targets.vim'
 Plug '907th/vim-auto-save'
 Plug 'kassio/neoterm'
 
-" Plug 'vimwiki/vimwiki'
+Plug 'vimwiki/vimwiki'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'lambdalisue/suda.vim' " for editing with sudo in nvim
 
-Plug 'rakr/vim-one' " or other package manager
+Plug 'rakr/vim-one' 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 
@@ -61,17 +71,19 @@ Plug 'haya14busa/is.vim'
 
 call plug#end()
 
+let g:highlightedyank_highlight_duration = 80
+"
 " markdown
 let g:vim_markdown_folding_style_pythonic = 1
 
 " vim wiki 
-" let g:vimwiki_map_prefix = '<Leader>e'
-" let wiki = {}
-" let wiki.path ='~/dropbox/notes/'
-" let wiki.syntax ='markdown'
-" let wiki.ext ='.md'
-" let g:vimwiki_list = [wiki]
-" let g:vimwiki_folding='expr'
+let g:vimwiki_map_prefix = '<Leader>e'
+let wiki = {}
+let wiki.path ='~/dropbox/notes/'
+let wiki.syntax ='markdown'
+let wiki.ext ='.md'
+let g:vimwiki_list = [wiki]
+let g:vimwiki_folding='expr'
 """"color theme"""""""""
 
 " for getting colors to work source: https://github.com/rakr/vim-one
@@ -171,9 +183,16 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 nmap <silent> [e <Plug>(coc-diagnostic-prev-error)
 nmap <silent> ]e <Plug>(coc-diagnostic-next-error)
 
+" navigate between tabs. more convienent then gt and gT
+" shadow tags navigation
+nmap ]t :tabn<CR>
+nmap [t :tabp<CR>
+nmap [T :tabfirst<CR>
+nmap ]T :tablast<CR>
+
 " navigate chunks of current buffer
-nmap [c <Plug>(coc-git-prevchunk)
-nmap ]c <Plug>(coc-git-nextchunk)
+nmap [g <Plug>(coc-git-prevchunk)
+nmap ]g <Plug>(coc-git-nextchunk)
 nmap gh <Plug>(coc-git-chunkinfo)
 
 " Remap keys for gotos
@@ -254,6 +273,7 @@ nnoremap <leader>wv :vsplit<cr>
 
 " update is like save but only runs when file has change so doesn't change
 nnoremap <M-s> :update<cr>
+nnoremap <leader>s :update<cr>
 
 " open directory current file
 nnoremap <leader>fd :Ex<cr>
@@ -459,12 +479,12 @@ nnoremap <leader>qq :cclose<bar>lclose<cr>
 set splitright
 set splitbelow
 
-"" Open Gstatus 
-nnoremap <silent> <Leader>gs :G<CR>
+
 "" Open Gstatus in new tab
 "" nnoremap <silent> <Leader>GS :tab G<CR>
 "" Close tab
 nnoremap <Leader>tq :tabclose<CR>
+nnoremap <Leader>to :tabonly<CR>
 nnoremap <Leader>tn :tabnew<CR>
 
 " Auto-clean fugitive buffers
@@ -478,7 +498,6 @@ autocmd VimResized * wincmd =
 """" TEMP """""
 " Disable visual mode as a practice
 noremap v <nop>
-noremap V <nop>
 " noremap V <nop>
 " Disable Arrow keys in Normal mode
 noremap <up> <nop>
@@ -576,4 +595,43 @@ function! ToggleQuickFix()
         cclose
     endif
 endfunction
-nnoremap <leader>wf :call ToggleQuickFix()<cr>
+
+"" vim-qf
+nmap <leader>wf <Plug>(qf_qf_toggle)
+let g:qf_mapping_ack_style = 1
+let g:qf_max_height = 14
+
+
+"" Fugitive settings
+"" Notes
+"" To load *commited* version of current file :Gread HEAD:%
+"" To load *index* version of current file :Gread 
+
+""""
+let g:github_enterprise_urls = ['https://git.autodesk.com']
+
+function! ToggleGStatus()
+    if buflisted(bufname('.git/index'))
+        bd .git/index
+    else
+        Gstatus
+    endif
+endfunction
+command! ToggleGStatus :call ToggleGStatus()
+" nnoremap <silent> <Leader>gs :G<CR>
+nmap <Leader>gs :ToggleGStatus<CR>
+nmap <Leader>gl :Git --paginate lg<CR>
+
+"" undo tree
+nnoremap <Leader>u :MundoToggle<CR>
+
+" psliwka/vim-smoothie
+let g:smoothie_no_default_mappings = 0
+nmap <down> <Plug>(SmoothieDownwards)
+nmap <up> <Plug>(SmoothieUpwards)
+set mouse=a
+
+" vim sandwich - surround mapping. 
+" dss and css are awesome!
+runtime macros/sandwich/keymap/surround.vim
+
