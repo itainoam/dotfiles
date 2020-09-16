@@ -143,17 +143,21 @@ _fzf_complete_g-start() {
 }
 
 g-start() {
+ # git fetch && git checkout master && git rebase --autostash && git checkout -b "itai/$1:u/$2" master && git branch --set-upstream-to "origin/master"; 
+
   SOURCE_BRANCH="master"
   # workaround because main branch in meetings is develop
   REMOTE_URL=$(git config --get remote.origin.url)
   if [ "$REMOTE_URL" = "https://git.autodesk.com/BIM360/meetings-ui-web.git" ]; then
     SOURCE_BRANCH="develop"
   fi
-  git fetch && git checkout $SOURCE_BRANCH && git rebase --autostash && git checkout -b "itai/SCPJM-$1-$2" $SOURCE_BRANCH 
+  git fetch && git checkout $SOURCE_BRANCH && git rebase --autostash && git checkout -b "itai/$1-$2" $SOURCE_BRANCH && git branch --set-upstream-to origin/$SOURCE_BRANCH && git push; 
 }
 
 g-finish() {
-  JIRA=$(git branch | sed -n '/\* /s///p' | grep -oiE 'SCPJM-[0-9]{4}');
+  BRANCH=$(git branch | sed -n '/\* /s///p' )
+  JIRA=$(echo $BRANCH | grep -oiE 'SCPJM-[0-9]{4}');
+  PR_MSG=$(echo ${BRANCH:16} | tr "-" " " | awk '{print toupper(substr($0, 1, 1)) substr($0, 2)}' ) # removes dash and then capitlize first letter
   REMOTE_URL=$(git config --get remote.origin.url)
   
   # workaround because main branch in meetings is develop
@@ -170,7 +174,8 @@ g-finish() {
   
   # TODO: add a jira ticket link as last line in the format of: Resolves: SCPJM-123
 
-  echo $DIFF_LOG |cat - ~/pr-template.md > /tmp/out && mv /tmp/out ~/pr-template-with-changes.md;
+
+  echo "${PR_MSG}\n\nresolves: ${JIRA} \n${DIFF_LOG}" |cat - ~/pr-template.md > /tmp/out && mv /tmp/out ~/pr-template-with-changes.md;
   hub pull-request --push --browse -F - --edit < ~/pr-template-with-changes.md
 }
 
