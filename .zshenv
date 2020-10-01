@@ -114,7 +114,7 @@ g-unstage() {
 }
 
 prs() {
-    hub pr list -f "%sC%>(8)%I%Creset %t% l%n" | fzf --height 40% --reverse | awk '{print $1}' | xargs -I % sh -c 'hub pr checkout %'
+    hub pr list -f "%sC%>(8)%I%Creset %t% l%n" | fzf --height 40% --reverse | awk '{print $1}' 
 }
 
 g-fixup() {
@@ -151,7 +151,7 @@ g-start() {
   if [ "$REMOTE_URL" = "https://git.autodesk.com/BIM360/meetings-ui-web.git" ]; then
     SOURCE_BRANCH="develop"
   fi
-  git fetch && git checkout $SOURCE_BRANCH && git rebase --autostash && git checkout -b "itai/$1-$2" $SOURCE_BRANCH && git branch --set-upstream-to origin/$SOURCE_BRANCH && git push; 
+  git fetch && git checkout $SOURCE_BRANCH && git rebase --autostash && git checkout -b "itai/SCPJM-$1" $SOURCE_BRANCH && git branch --set-upstream-to origin/$SOURCE_BRANCH && git push; 
 }
 
 g-finish() {
@@ -167,7 +167,7 @@ g-finish() {
     rm -f ~/dev/meetings-ui-web/.git/PULLREQ_EDITMSG
   else
     rm -f ~/dev/acs-meetings/.git/PULLREQ_EDITMSG
-    DIFF_LOG=$(git log --pretty=format:%s%n%n%b origin/master..);
+    DIFF_LOG=$(git log --pretty=format:%s%n%n%b origin/master..); # not using diff log for now
   fi
   # jira transition --noedit 'Start Progress' $JIRA || true;
   # jira transition --noedit 'Ready for review' $JIRA || true;
@@ -175,7 +175,7 @@ g-finish() {
   # TODO: add a jira ticket link as last line in the format of: Resolves: SCPJM-123
 
 
-  echo "${PR_MSG}\n\nresolves: ${JIRA} \n${DIFF_LOG}" |cat - ~/pr-template.md > /tmp/out && mv /tmp/out ~/pr-template-with-changes.md;
-  hub pull-request --push --browse -F - --edit < ~/pr-template-with-changes.md
+  echo "${PR_MSG}\n\nresolves: ${JIRA}" |cat - ~/pr-template.md > /tmp/out && mv /tmp/out ~/pr-template-with-changes.md;
+  git push && hub pull-request --push --browse -F - --edit < ~/pr-template-with-changes.md
 }
 

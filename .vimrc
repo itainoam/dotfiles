@@ -13,7 +13,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'flazz/vim-colorschemes'
 Plug 'metakirby5/codi.vim'
 Plug 'tpope/vim-vinegar'
-Plug 'tpope/vim-commentary'
+Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-fugitive'
 Plug 'sodapopcan/vim-twiggy' " fugitive plugin for branches
 Plug 'tpope/vim-repeat'
@@ -29,12 +29,16 @@ Plug 'simnalamburt/vim-mundo'
 Plug 'tommcdo/vim-exchange'
 Plug 'machakann/vim-highlightedyank'
 Plug 'psliwka/vim-smoothie' " smooth scrolling with c-d, c-u
-Plug 'machakann/vim-sandwich' " smooth scrolling with c-d, c-u
-Plug 'padde/jump.vim'
+Plug 'machakann/vim-sandwich' 
+Plug 'padde/jump.vim' " :J to autojump
+Plug 'farmergreg/vim-lastplace' 
+Plug 't9md/vim-choosewin' 
+Plug 'justinmk/vim-sneak' 
+Plug 'tpope/vim-rsi'
+Plug 'myusuf3/numbers.vim'  " not sure it's needed. active buffer is relative, others are regular 
+" Plug 'zhaocai/GoldenView.Vim' " TODO: automatically resize windows. does it help or remove?
 
-
-
-" Plug 'airblade/vim-rooter' " no need because using sessions
+Plug 'airblade/vim-rooter' 
 "
 """" text objects """""
 
@@ -84,6 +88,7 @@ let wiki.syntax ='markdown'
 let wiki.ext ='.md'
 let g:vimwiki_list = [wiki]
 let g:vimwiki_folding='expr'
+nnoremap <leader>vw :e ~/dropbox/notes/vim.md<cr>
 """"color theme"""""""""
 
 " for getting colors to work source: https://github.com/rakr/vim-one
@@ -130,6 +135,12 @@ set signcolumn=yes
 " Show title of window as file name
 set title
 
+" used in status line to show choosewin switch char
+function! WinLabel()
+    let n = winnr() - 1
+    return g:choosewin_label[n:n]
+endfunction
+
 """"
 "" Todo: remove color of inactive window
 set statusline=
@@ -137,6 +148,10 @@ set statusline+=%#DiffAdd#%{(mode()=='n')?'\ \ NORMAL\ ':''}
 set statusline+=%#DiffChange#%{(mode()=='i')?'\ \ INSERT\ ':''}
 set statusline+=%#DiffDelete#%{(mode()=='r')?'\ \ REPLACE\ ':''}
 set statusline+=%#Cursor#%{(mode()=='v')?'\ \ VISUAL\ ':''}
+set statusline+=%2*\                     " blank char
+set statusline+=%2*\                     " blank char
+set statusline+=%#CursorLine#     " colour
+set statusline+=%{WinLabel()}             "current line
 set statusline+=%2*\                     " blank char
 set statusline+=\ %t\                   " short file name
 set statusline+=%2*\                     " blank char
@@ -154,8 +169,9 @@ set statusline+=%2*\                     " blank char
 set statusline+=%#Visual#       " colour
 set statusline+=%{coc#status()}
 set statusline+=%2*\                     " blank char
-set statusline+=%#CursorLine#       " colour
-set statusline+=\ %3p%%\                " percentage
+" set statusline+=\ %3p%%\                " percentage
+set statusline+=%l             "current line
+set statusline+=%2*/%L%*               "total lines
 """
 
 " Use tab for trigger completion with characters ahead and navigate.
@@ -230,12 +246,12 @@ map <leader>cf <Plug>(coc-format)
 
 "COMMENT: was deperected by using haya14busa/is.vim. consider removing
 "hide search highlight 
-nnoremap <leader><esc> :noh<cr>
+"nnoremap <leader><esc> :noh<cr>
 
 " Create mappings for function text object, requires document symbols feature of languageserver.
 xmap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
 omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
 omap af <Plug>(coc-funcobj-a)
 
 " Search workspace symbols
@@ -310,8 +326,14 @@ nnoremap <leader>ws  :split<CR>
 nnoremap <leader>wq :quit<CR>
 nnoremap <leader>wo :only<CR>
 
-nnoremap <leader>ww <c-w><c-w>
+
+nmap <leader>ww <Plug>(choosewin)
+"" choosewin
+let g:choosewin_label = 'DKFJGHABC'
 nnoremap <A-tab> <c-w>w
+let g:choosewin_blink_on_land      = 0 " don't blink at land
+" let g:choosewin_statusline_replace = 0 " don't replace statusline
+
 
 " Customize fzf colors to match your color scheme
 
@@ -461,10 +483,14 @@ xmap gx <Plug>(neoterm-repl-send)
 nnoremap <A-`> :bo Ttoggle<cr>
 let g:neoterm_autoinsert = 1
 let g:neoterm_size = 25
+let g:neoterm_default_mod = 'botright'
+"" custom commands
+nmap <Leader>ggf :Ttoggle<CR>git fetch<CR>
+nmap <Leader>ggpr :T hub pr show<CR>
+"" TODO Make it work
 
-" Map esacpe in terminal. to pass escape use ctrl+v esc
+" to change to normal mode ctrl-a ctrl-a
 if has('nvim')
-  " tnoremap <Esc> <C-\><C-n>
   tnoremap <A-`> <C-\><C-n>:bo Ttoggle<cr>
   tnoremap <A-a><A-a> <C-\><C-n>
 endif
@@ -489,7 +515,11 @@ nnoremap <Leader>tn :tabnew<CR>
 
 " Auto-clean fugitive buffers
 autocmd BufReadPost fugitive://* set bufhidden=delete
-
+" C to go to commit
+autocmd User fugitive 
+  \ if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' |
+  \   nnoremap <buffer> .. :edit %:h<CR> |
+  \ endif
 
 " Auto-resize splits when Vim gets resized.
 autocmd VimResized * wincmd =
@@ -509,13 +539,14 @@ inoremap <up> <nop>
 inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
-
+" Practice
+nnoremap diw :echo "Practice: Try using dw" <CR>
+nnoremap dip :echo "Pract"ice: Try using d{" <CR>
+"
 "" edit vimrc
 " TODO: replace edit vimrc with global mark
-nnoremap <leader>ve :e ~/.vimrc<cr>
-nnoremap <leader>vs :source ~/.vimrc<cr>
-nnoremap <leader>vh "zyiw:exe "h ".@z.""<cr>
-vnoremap <leader>vh "zy:exe "h ".@z.""<cr>
+nnoremap <leader>ve :e ~/dotfiles/.vimrc<cr>
+nnoremap <leader>vs :source ~/dotfiles/.vimrc<cr>
 
 "" open help in vertical split
 autocmd FileType help wincmd L
@@ -610,6 +641,8 @@ let g:qf_max_height = 14
 """"
 let g:github_enterprise_urls = ['https://git.autodesk.com']
 
+command! DiffHead :execute 'Git difftool -y head~'
+
 function! ToggleGStatus()
     if buflisted(bufname('.git/index'))
         bd .git/index
@@ -626,7 +659,7 @@ nmap <Leader>gl :Git --paginate lg<CR>
 nnoremap <Leader>u :MundoToggle<CR>
 
 " psliwka/vim-smoothie
-let g:smoothie_no_default_mappings = 0
+let g:smoothie_no_default_mappings = 1
 nmap <down> <Plug>(SmoothieDownwards)
 nmap <up> <Plug>(SmoothieUpwards)
 set mouse=a
@@ -635,3 +668,29 @@ set mouse=a
 " dss and css are awesome!
 runtime macros/sandwich/keymap/surround.vim
 
+" quick scope
+" let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+" highlight QuickScopePrimary guifg='#CD5C5C' gui=underline ctermfg=155 cterm=underline
+" highlight QuickScopeSecondary guifg='#00298c' gui=underline ctermfg=81 cterm=underline
+
+" mundo
+let g:mundo_width = 70
+let g:mundo_right = 1
+"
+" GoldenView.Vim'
+let g:goldenview__enable_default_mapping = 0
+
+"""""""""""""copied from christoomey .vimrc. """" 
+" TODO: is it helpeful?
+"
+" Swap 0 and ^. I tend to want to jump to the first non-whitespace character
+" so make that the easier one to do.
+nnoremap 0 ^
+nnoremap ^ 0
+
+" Switch between the last two files
+nnoremap <leader><leader> <c-^>
+
+" 2-character Sneak (default)
+nmap s <Plug>Sneak_s
+nmap S <Plug>Sneak_S

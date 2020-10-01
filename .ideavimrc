@@ -2,8 +2,11 @@ set multiple-cursors
 set surround
 set commentary
 set argtextobj
+set textobj-entire
 set ReplaceWithRegister
 
+set number
+set relativenumber  
 set incsearch hlsearch
 set ignorecase smartcase
 set matchpairs+=<:>
