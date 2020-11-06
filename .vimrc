@@ -39,6 +39,7 @@ Plug 'myusuf3/numbers.vim'  " not sure it's needed. active buffer is relative, o
 " Plug 'zhaocai/GoldenView.Vim' " TODO: automatically resize windows. does it help or remove?
 
 Plug 'airblade/vim-rooter' 
+Plug 'tpope/vim-dispatch' 
 "
 """" text objects """""
 
@@ -321,13 +322,17 @@ nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
 
 " Window management
+" Trying to use ctrl now
 nnoremap <leader>wv :vsplit<CR>
 nnoremap <leader>ws  :split<CR>
-nnoremap <leader>wq :quit<CR>
+nnoremap <leader>wq :echo "try wc to close windows" <CR>
+nnoremap <leader>wc :close<CR>
 nnoremap <leader>wo :only<CR>
 
 
-nmap <leader>ww <Plug>(choosewin)
+nnoremap <leader>ww <c-w><c-w>
+nnoremap <leader><leader>  <c-w><c-w>
+" nmap <leader>ww <Plug>(choosewin)
 "" choosewin
 let g:choosewin_label = 'DKFJGHABC'
 nnoremap <A-tab> <c-w>w
@@ -458,7 +463,7 @@ autocmd FileChangedShellPost *
 " --------------------
 " global search. 
 " can use -t scss to search for scss files.
-" example: CocList grep MeetingDescription -t scss
+" example: CocList grep MeetingDescription -t css
 " to search only in some directories just change cwd directory
 " changing back to git repo directory is :Gcd
 " nnoremap <leader>// :CocList --auto-preview grep -S 
@@ -540,9 +545,7 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 " Practice
-nnoremap diw :echo "Practice: Try using dw" <CR>
-nnoremap dip :echo "Pract"ice: Try using d{" <CR>
-"
+
 "" edit vimrc
 " TODO: replace edit vimrc with global mark
 nnoremap <leader>ve :e ~/dotfiles/.vimrc<cr>
@@ -689,7 +692,7 @@ nnoremap 0 ^
 nnoremap ^ 0
 
 " Switch between the last two files
-nnoremap <leader><leader> <c-^>
+" nnoremap <leader><leader> <c-^>
 
 " 2-character Sneak (default)
 nmap s <Plug>Sneak_s

@@ -37,8 +37,7 @@
     fixup = !sh -c '[ -z "$1" ] && git commit --fixup=$0 && git rebase --interactive --autosquash $0~'
     fix-pr= !git extend && git push-f
     uncommit = reset --soft HEAD~1
-    update-pr-develop = !git fetch && git rebase origin/develop && git push-f
-    update-pr-master = !git fetch && git rebase origin/master && git push-f
+    update-pr = !git pull --rebase && git push-f
     push-f = push --force-with-lease
     branches = !git branch --sort=-committerdate | fzf --height 40% --reverse
     commits = "!HASH=`git --no-pager log --pretty=format:'%h %<(20)%an %<(15)%cr %s' | fzf --height 60% --tiebreak=index --reverse | awk 'END { if (NR==0)  exit 1; else print $1;}'` && echo $HASH"
@@ -64,3 +63,5 @@
 	tool = vimdiff
 [difftool]
 	prompt = false
+[pull]
+	rebase = true
