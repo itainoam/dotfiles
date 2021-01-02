@@ -36,9 +36,10 @@ Plug 't9md/vim-choosewin'
 Plug 'justinmk/vim-sneak' 
 Plug 'tpope/vim-rsi'
 Plug 'myusuf3/numbers.vim'  " not sure it's needed. active buffer is relative, others are regular 
+
 " Plug 'zhaocai/GoldenView.Vim' " TODO: automatically resize windows. does it help or remove?
 
-Plug 'airblade/vim-rooter' 
+" Plug 'airblade/vim-rooter' 
 Plug 'tpope/vim-dispatch' 
 "
 """" text objects """""
@@ -295,6 +296,8 @@ nnoremap <leader>s :update<cr>
 " open directory current file
 nnoremap <leader>fd :Ex<cr>
 
+" Most recent directories
+nnoremap <silent> <leader>fj  :call feedkeys(':J<space><tab><tab>','t')<cr>
 
 " Mappings using CoCList:
 " Show all diagnostics.
@@ -656,10 +659,10 @@ endfunction
 command! ToggleGStatus :call ToggleGStatus()
 " nnoremap <silent> <Leader>gs :G<CR>
 nmap <Leader>gs :ToggleGStatus<CR>
-nmap <Leader>gl :Git --paginate lg<CR>
+nmap <Leader>gl :Git --paginate llg<CR>
 
 "" undo tree
-nnoremap <Leader>u :MundoToggle<CR>
+nnoremap <Leader>uu :MundoToggle<CR>
 
 " psliwka/vim-smoothie
 let g:smoothie_no_default_mappings = 1
@@ -692,8 +695,14 @@ nnoremap 0 ^
 nnoremap ^ 0
 
 " Switch between the last two files
-" nnoremap <leader><leader> <c-^>
+nnoremap <leader><tab> <c-^>
 
 " 2-character Sneak (default)
 nmap s <Plug>Sneak_s
 nmap S <Plug>Sneak_S
+let g:sneak#label = 1
+
+" delete without copy
+nnoremap <leader>d "_d
+xnoremap <leader>d "_d
+xnoremap <leader>p "_dP
