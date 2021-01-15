@@ -35,7 +35,8 @@ Plug 'farmergreg/vim-lastplace'
 Plug 't9md/vim-choosewin' 
 Plug 'justinmk/vim-sneak' 
 Plug 'tpope/vim-rsi'
-Plug 'myusuf3/numbers.vim'  " not sure it's needed. active buffer is relative, others are regular 
+Plug 'justinmk/vim-dirvish'  
+Plug 'svermeulen/vim-yoink'  
 
 " Plug 'zhaocai/GoldenView.Vim' " TODO: automatically resize windows. does it help or remove?
 
@@ -72,7 +73,8 @@ Plug 'rakr/vim-one'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 
-Plug 'vim-scripts/ReplaceWithRegister'
+" Plug 'vim-scripts/ReplaceWithRegister'
+Plug 'svermeulen/vim-subversive'
 Plug 'haya14busa/is.vim'
 
 call plug#end()
@@ -124,9 +126,6 @@ endif
 command! -nargs=? Fold :call     CocAction('fold', <f-args>) 
 " Better display for messages
 set cmdheight=2
-
-" Smaller updatetime for CursorHold & CursorHoldI
-set updatetime=300
 
 " don't give |ins-completion-menu| messages.
 set shortmess+=c
@@ -234,6 +233,8 @@ endfunction
 
 " Highlight symbol under cursor on CursorHold
 autocmd CursorHold * silent call CocActionAsync('highlight')
+" change highlight color
+autocmd ColorScheme * highlight CocHighlightText      guibg=#ededed
 
 " Remap for rename current word
 nmap <leader>re <Plug>(coc-rename)
@@ -294,7 +295,11 @@ nnoremap <M-s> :update<cr>
 nnoremap <leader>s :update<cr>
 
 " open directory current file
-nnoremap <leader>fd :Ex<cr>
+" nnoremap <leader>fd :Dirvish %<cr>
+nnoremap <leader>fd :echo "instead, use -" <CR>
+" open at pwd 
+nnoremap <leader>fp :echo "instead, use :Ex" <CR>
+" nnoremap <leader>fp :Dirvish<cr>
 
 " Most recent directories
 nnoremap <silent> <leader>fj  :call feedkeys(':J<space><tab><tab>','t')<cr>
@@ -367,7 +372,7 @@ autocmd BufRead,BufNewFile * setlocal signcolumn=yes
 
 syntax enable
 set number
-set relativenumber  
+" set relativenumber  
 set wildmenu
 set wildmode=longest:full,full
 set timeoutlen=1000 ttimeoutlen=0 "elimentates delay when getting in and out of cmd
@@ -476,7 +481,8 @@ nnoremap <leader>qq :cclose<bar>lclose<cr>
 nnoremap <leader>qe :copen<bar>lclose<cr>
 "
 " Change directory to current file directory
-command! Fcd :execute 'cd %:p:h' 
+" command! Fcd :execute 'cd %:p:h' 
+command! Fcd :echo "instead use :cd %" 
 
 " Yank till end of line
 nnoremap Y y$
@@ -542,12 +548,6 @@ noremap <up> <nop>
 noremap <down> <nop>
 noremap <left> <nop>
 noremap <right> <nop>
-" Disable Arrow keys in Insert mode
-inoremap <up> <nop>
-inoremap <down> <nop>
-inoremap <left> <nop>
-inoremap <right> <nop>
-" Practice
 
 "" edit vimrc
 " TODO: replace edit vimrc with global mark
@@ -561,7 +561,7 @@ autocmd FileType help wincmd L
 let g:auto_save        = 1
 let g:auto_save_silent = 1
 let g:auto_save_events = ["FocusLost","CursorHold","BufLeave"]
-set updatetime=2000
+set updatetime=1000
 
 " toggle relative lines with c-l
 nnoremap <C-L> :set rnu!<cr>
@@ -671,7 +671,7 @@ nmap <up> <Plug>(SmoothieUpwards)
 set mouse=a
 
 " vim sandwich - surround mapping. 
-" dss and css are awesome!
+" dss and css are awesUpdateome!
 runtime macros/sandwich/keymap/surround.vim
 
 " quick scope
@@ -688,7 +688,6 @@ let g:goldenview__enable_default_mapping = 0
 
 """""""""""""copied from christoomey .vimrc. """" 
 " TODO: is it helpeful?
-"
 " Swap 0 and ^. I tend to want to jump to the first non-whitespace character
 " so make that the easier one to do.
 nnoremap 0 ^
@@ -701,8 +700,43 @@ nnoremap <leader><tab> <c-^>
 nmap s <Plug>Sneak_s
 nmap S <Plug>Sneak_S
 let g:sneak#label = 1
-
+    
 " delete without copy
 nnoremap <leader>d "_d
 xnoremap <leader>d "_d
 xnoremap <leader>p "_dP
+
+
+" dirvish
+"""""""""""""
+" :!mkdir %foo  - to create directory
+" :e %<tab> - to create file
+" disable netrw
+let g:loaded_netrwPlugin = 1
+command! -nargs=? -complete=dir Explore Dirvish <args>
+command! -nargs=? -complete=dir Sexplore belowright split | silent Dirvish <args>
+command! -nargs=? -complete=dir Vexplore leftabove vsplit | silent Dirvish <args>
+" q instead of gq to quit 
+augroup dirvish_config
+    autocmd!
+    autocmd FileType dirvish silent! nmap <buffer> q <Plug>(dirvish_quit)
+    autocmd FileType dirvish silent! nnoremap <buffer> gq q
+augroup END
+
+""" yoink """"  
+nmap <c-n> <plug>(YoinkPostPasteSwapBack)
+nmap <c-p> <plug>(YoinkPostPasteSwapForward)
+nmap p <plug>(YoinkPaste_p)
+nmap P <plug>(YoinkPaste_P)
+"" prevent yank to move cursor position
+nmap y <plug>(YoinkYankPreserveCursorPosition)
+xmap y <plug>(YoinkYankPreserveCursorPosition)
+let g:yoinkMaxItems = 50
+let g:yoinkSavePersistently = 1
+"""""""""""
+
+"" subversive - trying this instead of ReplaceWithRegister""
+" gr for substitute
+nmap gr <plug>(SubversiveSubstitute)
+nmap grr <plug>(SubversiveSubstituteLine)
+"""""""""""

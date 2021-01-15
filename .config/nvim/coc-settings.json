@@ -3,8 +3,8 @@
     "css",
     "Markdown",
     //    "javascript",
-    "javascriptreact",
-    "typescript",
+    //   "javascriptreact",
+    //    "typescript",
     "json"
   ],
   "session.directory": "~/.vim/session",
@@ -23,5 +23,6 @@
   "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete",
   "list.source.branches.defaultArgs": ["--sort", "-committerdate"],
   "tsserver.npm": "/usr/local/bin/npm",
-  "list.source.grep.excludePatterns": ["**/package-lock.json"]
+  "list.source.grep.excludePatterns": ["**/package-lock.json"],
+  "diagnostic.level": "error"
 }
