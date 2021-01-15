@@ -32,7 +32,7 @@ Plug 'psliwka/vim-smoothie' " smooth scrolling with c-d, c-u
 Plug 'machakann/vim-sandwich' 
 Plug 'padde/jump.vim' " :J to autojump
 Plug 'farmergreg/vim-lastplace' 
-Plug 't9md/vim-choosewin' 
+" Plug 't7md/vim-choosewin' 
 Plug 'justinmk/vim-sneak' 
 Plug 'tpope/vim-rsi'
 Plug 'justinmk/vim-dirvish'  
@@ -210,8 +210,14 @@ nmap ]T :tablast<CR>
 " navigate chunks of current buffer
 nmap [g <Plug>(coc-git-prevchunk)
 nmap ]g <Plug>(coc-git-nextchunk)
-nmap gh <Plug>(coc-git-chunkinfo)
+nmap <leader>guu :CocCommand git.chunkUndo<cr>
+nmap <leader>gh :CocCommand git.chunkInfo<cr>
+nnoremap <leader>gP :Dispatch! git push<CR>
+nnoremap <leader>gp :Dispatch! git pull<CR>
+nmap <Leader>ggf :Ttoggle<CR>git fetch<CR>
+nmap <Leader>ggpr :T hub pr show<CR>
 
+"" TODO Make it work
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
@@ -250,6 +256,7 @@ map <leader>cf <Plug>(coc-format)
 "COMMENT: was deperected by using haya14busa/is.vim. consider removing
 "hide search highlight 
 "nnoremap <leader><esc> :noh<cr>
+"NOTE: center after search. check if it's helpful
 
 " Create mappings for function text object, requires document symbols feature of languageserver.
 xmap if <Plug>(coc-funcobj-i)
@@ -498,10 +505,6 @@ nnoremap <A-`> :bo Ttoggle<cr>
 let g:neoterm_autoinsert = 1
 let g:neoterm_size = 25
 let g:neoterm_default_mod = 'botright'
-"" custom commands
-nmap <Leader>ggf :Ttoggle<CR>git fetch<CR>
-nmap <Leader>ggpr :T hub pr show<CR>
-"" TODO Make it work
 
 " to change to normal mode ctrl-a ctrl-a
 if has('nvim')
@@ -588,8 +591,24 @@ nnoremap  <leader>yy  "+yy
 " " Paste from clipboard
 nnoremap <leader>p "+p
 nnoremap <leader>P "+P
-vnoremap <leader>p "+p
+vnor:emap <leader>p "+p
 vnoremap <leader>P "+P
+
+"" subversive - trying this instead of ReplaceWithRegister""
+" gr for substitute
+nmap gr <plug>(SubversiveSubstitute)
+nmap grr <plug>(SubversiveSubstituteLine)
+""" yoink """"  
+nmap <c-n> <plug>(YoinkPostPasteSwapBack)
+nmap <c-p> <plug>(YoinkPostPasteSwapForward)
+nmap p <plug>(YoinkPaste_p)
+nmap P <plug>(YoinkPaste_P)
+"" prevent yank to move cursor position
+nmap y <plug>(YoinkYankPreserveCursorPosition)
+xmap y <plug>(YoinkYankPreserveCursorPosition)
+let g:yoinkMaxItems = 50
+let g:yoinkSavePersistently = 1
+"""""""""""
 
 " git messenger
 let g:git_messenger_no_default_mappings = 1
@@ -720,23 +739,7 @@ command! -nargs=? -complete=dir Vexplore leftabove vsplit | silent Dirvish <args
 augroup dirvish_config
     autocmd!
     autocmd FileType dirvish silent! nmap <buffer> q <Plug>(dirvish_quit)
+    autocmd FileType dirvish silent! nmap <buffer> ~ :Dirvish $HOME<cr> "~ to go to $HOME"
     autocmd FileType dirvish silent! nnoremap <buffer> gq q
 augroup END
 
-""" yoink """"  
-nmap <c-n> <plug>(YoinkPostPasteSwapBack)
-nmap <c-p> <plug>(YoinkPostPasteSwapForward)
-nmap p <plug>(YoinkPaste_p)
-nmap P <plug>(YoinkPaste_P)
-"" prevent yank to move cursor position
-nmap y <plug>(YoinkYankPreserveCursorPosition)
-xmap y <plug>(YoinkYankPreserveCursorPosition)
-let g:yoinkMaxItems = 50
-let g:yoinkSavePersistently = 1
-"""""""""""
-
-"" subversive - trying this instead of ReplaceWithRegister""
-" gr for substitute
-nmap gr <plug>(SubversiveSubstitute)
-nmap grr <plug>(SubversiveSubstituteLine)
-"""""""""""
