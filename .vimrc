@@ -17,7 +17,7 @@ Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-fugitive'
 Plug 'sodapopcan/vim-twiggy' " fugitive plugin for branches
 Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-obsession'
+" Plug 'tpope/vim-obsession' "session mgmt
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-unimpaired'
 Plug 'sheerun/vim-polyglot'
@@ -36,8 +36,10 @@ Plug 'farmergreg/vim-lastplace'
 Plug 'justinmk/vim-sneak' 
 Plug 'tpope/vim-rsi'
 Plug 'justinmk/vim-dirvish'  
-Plug 'svermeulen/vim-yoink'  
-
+" Plug 'chaoren/vim-wordmotion'  
+Plug 'rhysd/clever-f.vim'       
+Plug 'wellle/visual-split.vim'       
+" Plug 'unblevable/quick-scope'       
 " Plug 'zhaocai/GoldenView.Vim' " TODO: automatically resize windows. does it help or remove?
 
 " Plug 'airblade/vim-rooter' 
@@ -73,8 +75,10 @@ Plug 'rakr/vim-one'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 
-" Plug 'vim-scripts/ReplaceWithRegister'
-Plug 'svermeulen/vim-subversive'
+Plug 'vim-scripts/ReplaceWithRegister'
+" Plug 'svermeulen/vim-yoink'  
+" Plug 'svermeulen/vim-subversive'
+
 Plug 'haya14busa/is.vim'
 
 call plug#end()
@@ -210,20 +214,20 @@ nmap ]T :tablast<CR>
 " navigate chunks of current buffer
 nmap [g <Plug>(coc-git-prevchunk)
 nmap ]g <Plug>(coc-git-nextchunk)
-nmap <leader>guu :CocCommand git.chunkUndo<cr>
-nmap <leader>gh :CocCommand git.chunkInfo<cr>
-nnoremap <leader>gP :Dispatch! git push<CR>
-nnoremap <leader>gp :Dispatch! git pull<CR>
-nmap <Leader>ggf :Ttoggle<CR>git fetch<CR>
-nmap <Leader>ggpr :T hub pr show<CR>
+nmap <leader>gcu :CocCommand git.chunkUndo<cr>
+nmap <leader>gci :CocCommand git.chunkInfo<cr>
+" nnoremap <leader>gc :GcdCR>
+nnoremap <leader>gP :Gpush<CR>
+nnoremap <leader>gp :Gpull<CR>
+nnoremap <leader>gf :Gfetch<CR>
+nmap <Leader>gpr :T hub pr show<CR>
 
 "" TODO Make it work
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-"" gu shadows vim 
-nmap <silent> gu <Plug>(coc-references)
+nmap <leader>gy <Plug>(coc-type-definition)
+" nmap <leader>gi <Plug>(coc-implementation)
+nmap <leader>gu <Plug>(coc-references)
 nmap <leader>h <Plug>(coc-diagnostic-info)
 
 " Use K to show documentation in preview window
@@ -246,10 +250,11 @@ autocmd ColorScheme * highlight CocHighlightText      guibg=#ededed
 nmap <leader>re <Plug>(coc-rename)
 " Remap keys for applying codeAction to the current buffer.
 xmap <leader>ac  <Plug>(coc-codeaction-selected)
-nmap <leader>ac  <Plug>(coc-codeaction-selected)
+nmap <leader>ac  <Plug>(coc-codeaction)
+
 
 " sets up prettier
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
+" command! -nargs=0 Prettier :CocCommand prettier.formatFile
 vmap <leader>cf  <Plug>(coc-format-selected)
 map <leader>cf <Plug>(coc-format)
 
@@ -301,13 +306,6 @@ nnoremap <leader>wv :vsplit<cr>
 nnoremap <M-s> :update<cr>
 nnoremap <leader>s :update<cr>
 
-" open directory current file
-" nnoremap <leader>fd :Dirvish %<cr>
-nnoremap <leader>fd :echo "instead, use -" <CR>
-" open at pwd 
-nnoremap <leader>fp :echo "instead, use :Ex" <CR>
-" nnoremap <leader>fp :Dirvish<cr>
-
 " Most recent directories
 nnoremap <silent> <leader>fj  :call feedkeys(':J<space><tab><tab>','t')<cr>
 
@@ -316,7 +314,6 @@ nnoremap <silent> <leader>fj  :call feedkeys(':J<space><tab><tab>','t')<cr>
 nnoremap <silent> <leader>fr  :<C-u>CocList mru<cr>
 nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
 nnoremap <silent> <leader>ff  :<C-u>CocList files<cr>
-nnoremap <silent> <leader>gc  :<C-u>CocList gstatus<cr>
 
 
 " Sessions shortcuts
@@ -379,7 +376,7 @@ autocmd BufRead,BufNewFile * setlocal signcolumn=yes
 
 syntax enable
 set number
-" set relativenumber  
+set relativenumber  
 set wildmenu
 set wildmode=longest:full,full
 set timeoutlen=1000 ttimeoutlen=0 "elimentates delay when getting in and out of cmd
@@ -543,7 +540,9 @@ autocmd VimResized * wincmd =
 
 
 """" TEMP """""
-" Disable visual mode as a practice
+"Disable $ for practice
+" noremap $ :echo "disabled. try capital (D,C) or A/I" <CR>
+"Disable visual mode as a practice
 noremap v <nop>
 " noremap V <nop>
 " Disable Arrow keys in Normal mode
@@ -569,10 +568,10 @@ set updatetime=1000
 " toggle relative lines with c-l
 nnoremap <C-L> :set rnu!<cr>
 
-
 " using N instead of l(ast) so that can map sentence
 " mapping this can causes errors
 " let g:targets_nl = 'nN'
+
 "text objects: buffer and line
 xnoremap <silent> ie gg0oG$
 onoremap <silent> ie :<C-U>execute "normal! m`"<Bar>keepjumps normal! ggVG<CR>
@@ -595,19 +594,20 @@ vnor:emap <leader>p "+p
 vnoremap <leader>P "+P
 
 "" subversive - trying this instead of ReplaceWithRegister""
+" NOTE: for now back to replaceWithRegister.
 " gr for substitute
-nmap gr <plug>(SubversiveSubstitute)
-nmap grr <plug>(SubversiveSubstituteLine)
-""" yoink """"  
-nmap <c-n> <plug>(YoinkPostPasteSwapBack)
-nmap <c-p> <plug>(YoinkPostPasteSwapForward)
-nmap p <plug>(YoinkPaste_p)
-nmap P <plug>(YoinkPaste_P)
-"" prevent yank to move cursor position
-nmap y <plug>(YoinkYankPreserveCursorPosition)
-xmap y <plug>(YoinkYankPreserveCursorPosition)
-let g:yoinkMaxItems = 50
-let g:yoinkSavePersistently = 1
+" nmap gr <plug>(SubversiveSubstitute)
+" nmap grr <plug>(SubversiveSubstituteLine)
+" """ yoink """"  
+" nmap <c-n> <plug>(YoinkPostPasteSwapBack)
+" nmap <c-p> <plug>(YoinkPostPasteSwapForward)
+" nmap p <plug>(YoinkPaste_p)
+" nmap P <plug>(YoinkPaste_P)
+" "" prevent yank to move cursor position
+" nmap y <plug>(YoinkYankPreserveCursorPosition)
+" xmap y <plug>(YoinkYankPreserveCursorPosition)
+" let g:yoinkMaxItems = 50
+" let g:yoinkSavePersistently = 1
 """""""""""
 
 " git messenger
@@ -679,6 +679,8 @@ command! ToggleGStatus :call ToggleGStatus()
 " nnoremap <silent> <Leader>gs :G<CR>
 nmap <Leader>gs :ToggleGStatus<CR>
 nmap <Leader>gl :Git --paginate llg<CR>
+" view log history of current file
+nmap <Leader>gfl :Glog -- %<CR>
 
 "" undo tree
 nnoremap <Leader>uu :MundoToggle<CR>
@@ -692,11 +694,6 @@ set mouse=a
 " vim sandwich - surround mapping. 
 " dss and css are awesUpdateome!
 runtime macros/sandwich/keymap/surround.vim
-
-" quick scope
-" let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
-" highlight QuickScopePrimary guifg='#CD5C5C' gui=underline ctermfg=155 cterm=underline
-" highlight QuickScopeSecondary guifg='#00298c' gui=underline ctermfg=81 cterm=underline
 
 " mundo
 let g:mundo_width = 70
@@ -715,10 +712,10 @@ nnoremap ^ 0
 " Switch between the last two files
 nnoremap <leader><tab> <c-^>
 
-" 2-character Sneak (default)
-nmap s <Plug>Sneak_s
-nmap S <Plug>Sneak_S
-let g:sneak#label = 1
+" " 2-character Sneak (default)
+" nmap s <Plug>Sneak_s
+" nmap S <Plug>Sneak_S
+" let g:sneak#label = 1
     
 " delete without copy
 nnoremap <leader>d "_d
@@ -728,6 +725,16 @@ xnoremap <leader>p "_dP
 
 " dirvish
 """""""""""""
+" open directory current file
+" NOTE: mapping - should work consistantely, but a bug in dirvish doesn't
+" return to correct place after q so had to redefine manually 
+nnoremap - :Dirvish %<cr>  
+nnoremap <leader>fd :echo "instead, use -" <CR>
+" open at pwd 
+nnoremap <leader>fp :echo "instead, use :E or _" <CR>
+nnoremap _ :Ex<CR>
+" nnoremap <leader>fp :Dirvish<cr>
+
 " :!mkdir %foo  - to create directory
 " :e %<tab> - to create file
 " disable netrw
@@ -742,4 +749,23 @@ augroup dirvish_config
     autocmd FileType dirvish silent! nmap <buffer> ~ :Dirvish $HOME<cr> "~ to go to $HOME"
     autocmd FileType dirvish silent! nnoremap <buffer> gq q
 augroup END
+
+"quickscope
+" highlight QuickScopePrimary  gui=bold  cterm=bold
+" highlight QuickScopeSecondary  gui=bold  cterm=bold
+" let g:qs_second_highlight = 0
+
+"clever-f
+let g:clever_f_mark_direct = 1
+let g:clever_f_across_no_line = 1
+map ; <Plug>(clever-f-repeat-forward)
+map , <Plug>(clever-f-repeat-back)
+
+" open a rest client
+nnoremap <leader>vr :e ~/dev/requests.http<cr>
+noremap <Leader>0 :CocCommand rest-client.request <cr>
+
+" Window focus selection  (wellle/visual-split.vim)
+xmap <leader>wf <Plug>(Visual-Split-VSSplitAbove)
+nmap <leader>wf <Plug>(Visual-Split-SplitAbove)
 
