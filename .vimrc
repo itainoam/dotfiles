@@ -140,12 +140,6 @@ set signcolumn=yes
 " Show title of window as file name
 set title
 
-" used in status line to show choosewin switch char
-function! WinLabel()
-    let n = winnr() - 1
-    return g:choosewin_label[n:n]
-endfunction
-
 """"
 "" Todo: remove color of inactive window
 set statusline=
@@ -156,9 +150,8 @@ set statusline+=%#Cursor#%{(mode()=='v')?'\ \ VISUAL\ ':''}
 set statusline+=%2*\                     " blank char
 set statusline+=%2*\                     " blank char
 set statusline+=%#CursorLine#     " colour
-set statusline+=%{WinLabel()}             "current line
 set statusline+=%2*\                     " blank char
-set statusline+=\ %t\                   " short file name
+set statusline+=%{expand('%:p:h:t')}/%t                   " file name with parent directory
 set statusline+=%2*\                     " blank char
 set statusline+=%#CursorLine#   " colour
 set statusline+=%{matchstr(get(v:,'this_session',''),'[^/]*$')}   "session file
@@ -314,6 +307,8 @@ nnoremap <silent> <leader>fj  :call feedkeys(':J<space><tab><tab>','t')<cr>
 nnoremap <silent> <leader>fr  :<C-u>CocList mru<cr>
 nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
 nnoremap <silent> <leader>ff  :<C-u>CocList files<cr>
+nnoremap <silent> <leader>fc  :<C-u>CocList gstatus<cr>
+nnoremap <silent> <leader>fgs  :<C-u>CocList gstatus<cr>
 
 
 " Sessions shortcuts
@@ -766,6 +761,6 @@ nnoremap <leader>vr :e ~/dev/requests.http<cr>
 noremap <Leader>0 :CocCommand rest-client.request <cr>
 
 " Window focus selection  (wellle/visual-split.vim)
-xmap <leader>wf <Plug>(Visual-Split-VSSplitAbove)
-nmap <leader>wf <Plug>(Visual-Split-SplitAbove)
+xmap <leader>wz <Plug>(Visual-Split-VSSplitAbove)
+nmap <leader>wz <Plug>(Visual-Split-SplitAbove)
 
