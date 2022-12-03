@@ -9,7 +9,7 @@
 [core]
     editor = vim
 	excludesfile = ~/.gitignore
-	pager = /usr/local/Cellar/git/2.27.0/share/git-core/contrib/diff-highlight/diff-highlight | less
+	# pager = /usr/local/Cellar/git/2.27.0/share/git-core/contrib/diff-highlight/diff-highlight | less
 	fileMode = false
 [alias]
   lg = !git --no-pager log --pretty=format:'%h %<(20)%an %<(15)%cr %s %C(yellow)%d%Creset' --decorate-refs="*develop*" -20
@@ -62,7 +62,5 @@
 	sort = -committerdate
 [diff]
 	tool = vimdiff
-[difftool]
-	prompt = false
 [pull]
 	rebase = true

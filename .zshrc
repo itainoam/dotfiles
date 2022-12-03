@@ -133,3 +133,11 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 #     # TODO update the path each time Vim has a major upgrade
 #     export VIMRUNTIME=/usr/share/vim/vim81
 # fi
+#
+#
+
+# Autodesk vault config
+export VAULT_ADDR=https://civ1.dv.adskengineer.net:8200
+export VAULT_ADDR=https://civ1.st.adskengineer.net:8200
+export VAULT_ADDR=https://civ1.pr.adskengineer.net:8200
+

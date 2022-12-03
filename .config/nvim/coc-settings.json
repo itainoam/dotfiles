@@ -1,12 +1,15 @@
 {
   "coc.preferences.formatOnSaveFiletypes": [
-    "css",
-    "Markdown",
-    //    "javascript",
-    //   "javascriptreact",
-    //    "typescript",
-    "json"
+    /* "css", */
+    /* "scss", */
+    /* "Markdown", */
+    /* "javascript", */
+    /* "javascriptreact", */
+    /* "typescript", */
+    /* "json" */
   ],
+  "prettier.singleQuote": true,
+  "suggest.noselect": false,
   "session.directory": "~/.vim/session",
   "javascript.suggest.enabled": false,
   "suggest.autoTrigger": "none",

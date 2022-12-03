@@ -39,6 +39,7 @@ Plug 'justinmk/vim-dirvish'
 " Plug 'chaoren/vim-wordmotion'  
 Plug 'rhysd/clever-f.vim'       
 Plug 'wellle/visual-split.vim'       
+Plug 'tpope/vim-abolish'       
 " Plug 'unblevable/quick-scope'       
 " Plug 'zhaocai/GoldenView.Vim' " TODO: automatically resize windows. does it help or remove?
 
@@ -96,7 +97,7 @@ let wiki.syntax ='markdown'
 let wiki.ext ='.md'
 let g:vimwiki_list = [wiki]
 let g:vimwiki_folding='expr'
-nnoremap <leader>vw :e ~/dropbox/notes/vim.md<cr>
+nnoremap <leader>vw :vsp ~/dropbox/notes/vim.md<cr>
 """"color theme"""""""""
 
 " for getting colors to work source: https://github.com/rakr/vim-one
@@ -248,8 +249,9 @@ nmap <leader>ac  <Plug>(coc-codeaction)
 
 " sets up prettier
 " command! -nargs=0 Prettier :CocCommand prettier.formatFile
-vmap <leader>cf  <Plug>(coc-format-selected)
+" vmap <leader>cf  <Plug>(coc-format-selected)
 map <leader>cf <Plug>(coc-format)
+" map <leader>cf :echo "formating is now done during save" <CR>
 
 "COMMENT: was deperected by using haya14busa/is.vim. consider removing
 "hide search highlight 
@@ -296,6 +298,7 @@ nnoremap <leader>fr :History<cr>
 nnoremap <leader>wv :vsplit<cr>
 
 " update is like save but only runs when file has change so doesn't change
+inoremap <M-s> <C-O>:update<CR><ESC>
 nnoremap <M-s> :update<cr>
 nnoremap <leader>s :update<cr>
 
@@ -307,7 +310,7 @@ nnoremap <silent> <leader>fj  :call feedkeys(':J<space><tab><tab>','t')<cr>
 nnoremap <silent> <leader>fr  :<C-u>CocList mru<cr>
 nnoremap <silent> <leader>o  :<C-u>CocList outline<cr>
 nnoremap <silent> <leader>ff  :<C-u>CocList files<cr>
-nnoremap <silent> <leader>fc  :<C-u>CocList gstatus<cr>
+nnoremap <silent> <leader>fgc  :<C-u>CocList gstatus<cr>
 nnoremap <silent> <leader>fgs  :<C-u>CocList gstatus<cr>
 
 
@@ -557,7 +560,10 @@ autocmd FileType help wincmd L
 
 let g:auto_save        = 1
 let g:auto_save_silent = 1
-let g:auto_save_events = ["FocusLost","CursorHold","BufLeave"]
+"NOTE: disabled autosave for working on submittals (except when switching buffers). Reload the app after save is too
+"slow
+" let g:auto_save_events = ["FocusLost","CursorHold","BufLeave"]
+let g:auto_save_events = ["BufLeave"]
 set updatetime=1000
 
 " toggle relative lines with c-l
@@ -708,10 +714,12 @@ nnoremap ^ 0
 nnoremap <leader><tab> <c-^>
 
 " " 2-character Sneak (default)
-" nmap s <Plug>Sneak_s
-" nmap S <Plug>Sneak_S
-" let g:sneak#label = 1
-    
+nmap s <Plug>Sneak_s
+nmap S <Plug>Sneak_S
+let g:sneak#label = 1
+let g:sneak#use_ic_scs = 1
+let sneak#s_next = 1
+
 " delete without copy
 nnoremap <leader>d "_d
 xnoremap <leader>d "_d
@@ -764,3 +772,16 @@ noremap <Leader>0 :CocCommand rest-client.request <cr>
 xmap <leader>wz <Plug>(Visual-Split-VSSplitAbove)
 nmap <leader>wz <Plug>(Visual-Split-SplitAbove)
 
+" macro repeat
+nmap <leader>m @@
+
+
+"	For better enter in autopair bracket completion
+" source :h coc#on_enter()
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+    \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+
+" Shift+J / Shift+K to move upward or downward an entire visual selection. Insanely useful.
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv

@@ -25,7 +25,8 @@ alias gitp='git push --dry-run --no-verify && git push'
 alias gre='git reset'
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
-alias gg="cd ~/dev/acs-meetings"
+
+alias sub="cd ~/dev/acs-submittals"
 alias bim="cd ~/dev/meetings-ui-web"
 alias platform="cd ~/dev/acs-sc-web-platform"
 alias edu="cd ~/edu"
@@ -38,6 +39,17 @@ alias mui-sync="while sleep 2; do ls ~/dev/mui/js/client/dist | entr -d npm run 
 alias magit="emacs --no-window-system --eval '(progn (magit-status) (delete-other-windows))'"
 
 alias ag='ag --path-to-ignore ~/.agignore'
+
+# python config
+alias python3='/usr/local/bin/python3.7'
+alias pip3='/usr/local/bin/pip3.7'
+export WORKON_HOME=~/Envs
+VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3.7
+source /usr/local/bin/virtualenvwrapper.sh
+# workflows_service specific
+export PYCURL_SSL_LIBRARY=openssl
+export CPPFLAGS=-I/usr/local/opt/openssl/include
+export LDFLAGS=-L/usr/local/opt/openssl/lib
 
 ## Helper functions
 sharbot1() {
@@ -145,7 +157,7 @@ _fzf_complete_g-start() {
 g-start() {
  # git fetch && git checkout master && git rebase --autostash && git checkout -b "itai/$1:u/$2" master && git branch --set-upstream-to "origin/master"; 
 
-  SOURCE_BRANCH="master"
+  SOURCE_BRANCH="develop"
   # workaround because main branch in meetings is develop
   REMOTE_URL=$(git config --get remote.origin.url)
   if [ "$REMOTE_URL" = "https://git.autodesk.com/BIM360/meetings-ui-web.git" ]; then
@@ -156,26 +168,27 @@ g-start() {
 
 g-finish() {
   BRANCH=$(git branch | sed -n '/\* /s///p' )
-  JIRA=$(echo $BRANCH | grep -oiE 'SCPJM-[0-9]{4}');
-  PR_MSG=$(echo ${BRANCH:16} | tr "-" " " | awk '{print toupper(substr($0, 1, 1)) substr($0, 2)}' ) # removes dash and then capitlize first letter
+  JIRA=$(echo $BRANCH | grep -oiE 'SCPJM-[0-9]{5}');
+  PR_MSG=$(echo ${JIRA} ${BRANCH:16} | tr "-" " " | awk '{print toupper(substr($0, 1, 1)) substr($0, 2)}' ) # removes dash and then capitlize first letter
   REMOTE_URL=$(git config --get remote.origin.url)
   
   # workaround because main branch in meetings is develop
-  if [ "$REMOTE_URL" = "https://git.autodesk.com/BIM360/meetings-ui-web.git" ]; then
-    DIFF_LOG=$(git log --pretty=format:%s%n%n%b origin/develop..);
-    # sometime previous pr msg is left, no need to use them..
-    rm -f ~/dev/meetings-ui-web/.git/PULLREQ_EDITMSG
-  else
-    rm -f ~/dev/acs-meetings/.git/PULLREQ_EDITMSG
-    DIFF_LOG=$(git log --pretty=format:%s%n%n%b origin/master..); # not using diff log for now
-  fi
+  # # update 2021 - no longer needed
+  # if [ "$REMOTE_URL" = "https://git.autodesk.com/BIM360/meetings-ui-web.git" ]; then
+  #   UPSTREAM_BRANCH="origin/develop" # sometime previous pr msg is left, no need to use them..
+  #   rm -f ~/dev/meetings-ui-web/.git/PULLREQ_EDITMSG
+  # else
+  #   UPSTREAM_BRANCH="origin/master"
+  #   rm -f ~/dev/acs-meetings/.git/PULLREQ_EDITMSG
+  # fi
   # jira transition --noedit 'Start Progress' $JIRA || true;
   # jira transition --noedit 'Ready for review' $JIRA || true;
+
+  UPSTREAM_BRANCH="origin/develop"
   
-  # TODO: add a jira ticket link as last line in the format of: Resolves: SCPJM-123
-
-
+  DIFF_LOG=$(git log --pretty=format:%s%n%n%b ${UPSTREAM_BRANCH}..);
   echo "${PR_MSG}\n\nresolves: ${JIRA}" |cat - ~/pr-template.md > /tmp/out && mv /tmp/out ~/pr-template-with-changes.md;
-  git push && hub pull-request --push --browse -F - --edit < ~/pr-template-with-changes.md
+  git push && hub pull-request --push --browse -F - --edit < ~/pr-template-with-changes.md && git branch --set-upstream-to ${UPSTREAM_BRANCH}
 }
 
+. "$HOME/.cargo/env"

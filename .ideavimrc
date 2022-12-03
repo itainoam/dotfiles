@@ -35,8 +35,8 @@ nmap [e :action GotoPreviousError <cr>
 nmap ]e :action GotoNextError <cr>
 nmap [q :action GotoPreviousError <cr>
 nmap ]q :action GotoNextError <cr>
-nnoremap [c :action VcsShowPrevChangeMarker<cr>
-nnoremap ]c :action VcsShowNextChangeMarker<cr>
+nnoremap [g :action VcsShowPrevChangeMarker<cr>
+nnoremap ]g :action VcsShowNextChangeMarker<cr>
 
 " Window management
 nnoremap <leader>ws  :split<CR>
