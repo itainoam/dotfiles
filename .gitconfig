@@ -7,8 +7,8 @@
     name = Itai Noam
     email = itai.noam@autodesk.com
 [core]
-    editor = vim
-	excludesfile = ~/.gitignore
+	editor = nvim
+	excludesfile = /Users/itai/.gitignore
 	# pager = /usr/local/Cellar/git/2.27.0/share/git-core/contrib/diff-highlight/diff-highlight | less
 	fileMode = false
 [alias]

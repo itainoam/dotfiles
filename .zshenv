@@ -25,6 +25,8 @@ alias gitp='git push --dry-run --no-verify && git push'
 alias gre='git reset'
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
+alias aws_auth_dev='~/aws_auth.sh -u noami -a "https://civ1.dv.adskengineer.net:8200" -v "account/487986017923/sts/Owner"'
+
 
 alias sub="cd ~/dev/acs-submittals"
 alias bim="cd ~/dev/meetings-ui-web"
@@ -40,12 +42,20 @@ alias magit="emacs --no-window-system --eval '(progn (magit-status) (delete-othe
 
 alias ag='ag --path-to-ignore ~/.agignore'
 
+# nvim - because I have 2 version installed - take homebrew
+alias nvim="/opt/homebrew/bin/nvim"
+alias nvim-lazy="NVIM_APPNAME=lazy-nvim nvim"
+alias nvim-ks="NVIM_APPNAME=kickstart-nvim nvim"
+
+
+
 # python config
 alias python3='/usr/local/bin/python3.7'
 alias pip3='/usr/local/bin/pip3.7'
 export WORKON_HOME=~/Envs
 VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3.7
 source /usr/local/bin/virtualenvwrapper.sh
+
 # workflows_service specific
 export PYCURL_SSL_LIBRARY=openssl
 export CPPFLAGS=-I/usr/local/opt/openssl/include
@@ -192,3 +202,6 @@ g-finish() {
 }
 
 . "$HOME/.cargo/env"
+
+# to resolve error "Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory"
+export NODE_OPTIONS="--max-old-space-size=4096"

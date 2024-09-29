@@ -21,6 +21,11 @@ antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-completions
 antigen bundle zsh-users/zsh-history-substring-search
 
+# aws completion
+autoload bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
+complete -C '/usr/local/bin/aws_completer' aws
+
 # git fzf plugin
 antigen bundle 'wfxr/forgit'
 #
@@ -136,8 +141,5 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 #
 #
 
-# Autodesk vault config
-export VAULT_ADDR=https://civ1.dv.adskengineer.net:8200
-export VAULT_ADDR=https://civ1.st.adskengineer.net:8200
-export VAULT_ADDR=https://civ1.pr.adskengineer.net:8200
 
+export PATH=/opt/homebrew/bin:/Users/itai/Envs/workflows/bin:/Users/itai/.yarn/bin:/Users/itai/.config/yarn/global/node_modules/.bin:/Users/itai/.autojump/bin:/Library/Frameworks/Python.framework/Versions/2.7/bin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/itai/.cargo/bin:/Applications/kitty.app/Contents/MacOS:/Users/itai/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/git:/Users/itai/.antigen/bundles/zsh-users/zsh-autosuggestions:/Users/itai/.antigen/bundles/zsh-users/zsh-completions:/Users/itai/.antigen/bundles/zsh-users/zsh-history-substring-search:/Users/itai/.antigen/bundles/wfxr/forgit:/Users/itai/bin:/usr/local/opt/fzf/bin:/usr/local/bin/aws_completer

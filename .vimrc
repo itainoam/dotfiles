@@ -785,3 +785,6 @@ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
 " Shift+J / Shift+K to move upward or downward an entire visual selection. Insanely useful.
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
+
+autocmd FileType python let b:coc_root_patterns = ['.git', '.env', 'venv', '.venv', 'setup.cfg', 'setup.py', 'pyproject.toml', 'pyrightconfig.json']
+
