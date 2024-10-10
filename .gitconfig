@@ -57,10 +57,10 @@
 [hub]
 	host = git.autodesk.com
 [pager]
-	diff = diff-highlight | less
+  # diff = diff-highlight | less
 [branch]
 	sort = -committerdate
 [diff]
-	tool = vimdiff
+  external = difft
 [pull]
 	rebase = true

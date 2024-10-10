@@ -43,23 +43,18 @@ alias magit="emacs --no-window-system --eval '(progn (magit-status) (delete-othe
 alias ag='ag --path-to-ignore ~/.agignore'
 
 # nvim - because I have 2 version installed - take homebrew
-alias nvim="/opt/homebrew/bin/nvim"
 alias nvim-lazy="NVIM_APPNAME=lazy-nvim nvim"
 alias nvim-ks="NVIM_APPNAME=kickstart-nvim nvim"
 
 
 
 # python config
-alias python3='/usr/local/bin/python3.7'
-alias pip3='/usr/local/bin/pip3.7'
-export WORKON_HOME=~/Envs
-VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3.7
-source /usr/local/bin/virtualenvwrapper.sh
+# alias python3='/usr/local/bin/python3.7'
+# alias pip3='/usr/local/bin/pip3.7'
+# export WORKON_HOME=~/Envs
+# VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3.7
+# source /usr/local/bin/virtualenvwrapper.sh
 
-# workflows_service specific
-export PYCURL_SSL_LIBRARY=openssl
-export CPPFLAGS=-I/usr/local/opt/openssl/include
-export LDFLAGS=-L/usr/local/opt/openssl/lib
 
 ## Helper functions
 sharbot1() {
@@ -201,7 +196,7 @@ g-finish() {
   git push && hub pull-request --push --browse -F - --edit < ~/pr-template-with-changes.md && git branch --set-upstream-to ${UPSTREAM_BRANCH}
 }
 
-. "$HOME/.cargo/env"
+# . "$HOME/.cargo/env"
 
 # to resolve error "Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory"
 export NODE_OPTIONS="--max-old-space-size=4096"
