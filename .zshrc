@@ -143,3 +143,8 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 
 export PATH=/opt/homebrew/bin:/Users/itai/Envs/workflows/bin:/Users/itai/.yarn/bin:/Users/itai/.config/yarn/global/node_modules/.bin:/Users/itai/.autojump/bin:/Library/Frameworks/Python.framework/Versions/2.7/bin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/itai/.cargo/bin:/Applications/kitty.app/Contents/MacOS:/Users/itai/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/git:/Users/itai/.antigen/bundles/zsh-users/zsh-autosuggestions:/Users/itai/.antigen/bundles/zsh-users/zsh-completions:/Users/itai/.antigen/bundles/zsh-users/zsh-history-substring-search:/Users/itai/.antigen/bundles/wfxr/forgit:/Users/itai/bin:/usr/local/opt/fzf/bin:/usr/local/bin/aws_completer
+
+. "$HOME/.local/bin/env"
+
+# Source secrets file if it exists (API keys, tokens, etc.)
+[ -f ~/.secrets ] && source ~/.secrets

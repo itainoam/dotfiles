@@ -1,6 +1,21 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Disable Neovim 0.10+ default LSP keymaps that start with 'gr' to avoid conflict with ReplaceWithRegister
+-- These are GLOBAL mappings, not buffer-local, so we delete them globally
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function()
+    -- Schedule deletion to happen after Neovim's defaults are applied
+    vim.schedule(function()
+      pcall(vim.keymap.del, 'n', 'grn') -- no buffer option = global
+      pcall(vim.keymap.del, 'n', 'gra')
+      pcall(vim.keymap.del, 'x', 'gra')
+      pcall(vim.keymap.del, 'n', 'gri')
+      pcall(vim.keymap.del, 'n', 'grt')
+    end)
+  end,
+})
+
 -- Save undo history
 vim.o.undofile = true
 
@@ -828,7 +843,7 @@ require('lazy').setup({
           gemini = function()
             return require('codecompanion.adapters').extend('gemini', {
               env = {
-                api_key = 'AIzaSyDwL-bmpuKVSshQ3d7AIT8KHQAHu0UiXjc', -- Make sure to set this environment variable
+                api_key = os.getenv 'GEMINI_API_KEY', -- Set with: export GEMINI_API_KEY='your-key-here'
                 model = 'gemini-2.5-flash-001', -- The free Gemini 2.5 Flash model
               },
             })
@@ -873,10 +888,13 @@ require('lazy').setup({
     config = function()
       -- Disable default mappings
       vim.g.ReplaceWithRegisterOperatorMappings = 0
-      -- Set up leader-based mappings because of lsp default mapping
-      vim.keymap.set('n', '<Leader>gr', '<Plug>ReplaceWithRegisterOperator', { noremap = false })
-      vim.keymap.set('n', '<Leader>grr', '<Plug>ReplaceWithRegisterLine', { noremap = false })
-      vim.keymap.set('x', '<Leader>gr', '<Plug>ReplaceWithRegisterVisual', { noremap = false })
+
+      -- Use 's' as the operator (normal + visual)
+      vim.keymap.set('n', 's', '<Plug>ReplaceWithRegisterOperator', { noremap = false })
+      vim.keymap.set('x', 's', '<Plug>ReplaceWithRegisterVisual', { noremap = false })
+
+      -- Optional: whole line and eol versions, similar to what you had before
+      vim.keymap.set('n', 'ss', '<Plug>ReplaceWithRegisterLine', { noremap = false })
     end,
   },
   {

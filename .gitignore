@@ -20,5 +20,6 @@
 !.gitconfig
 !config.el
 !init.el
+!init.lua
 
 
