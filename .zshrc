@@ -148,3 +148,9 @@ export PATH=/opt/homebrew/bin:/Users/itai/Envs/workflows/bin:/Users/itai/.yarn/b
 
 # Source secrets file if it exists (API keys, tokens, etc.)
 [ -f ~/.secrets ] && source ~/.secrets
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/itai/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/itai/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/itai/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/itai/google-cloud-sdk/completion.zsh.inc'; fi

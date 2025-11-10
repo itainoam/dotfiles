@@ -308,6 +308,9 @@ require('lazy').setup({
           oldfiles = {
             theme = 'dropdown',
           },
+          quickfix = {
+            theme = 'ivy',
+          },
         },
         defaults = {
           mappings = {
@@ -923,17 +926,29 @@ require('lazy').setup({
       vim.g.grepper = {
         tools = { 'rg', 'git' },
         rg = {
-          grepprg = 'rg -H --smart-case --no-heading --vimgrep' .. (vim.fn.has 'win32' == 1 and ' $* .' or ''),
+          grepprg = 'rg -H --smart-case --no-heading --vimgrep --glob "!*.json" --glob "!*.md"' .. (vim.fn.has 'win32' == 1 and ' $* .' or ''),
           grepformat = '%f:%l:%c:%m,%f',
           escape = '\\^$.*+?()[]{}|',
         },
         highlight = 1,
+        open = 0, -- I'm not opening because it's now showing in telescope quickfix
       }
 
       -- Set up the keymaps
       vim.keymap.set('n', 'gs', '<plug>(GrepperOperator)', {})
       vim.keymap.set('x', 'gs', '<plug>(GrepperOperator)', {})
-      -- vim.keymap.set('n', '<leader>//', ':Grepper<cr>', {})
+      vim.keymap.set('n', '<leader>//', ':Grepper<cr>', {})
+
+      -- Automatically open Telescope quickfix picker after Grepper finishes
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'Grepper',
+        callback = function()
+          local qflist = vim.fn.getqflist()
+          if qflist and #qflist > 0 then
+            require('telescope.builtin').quickfix()
+          end
+        end,
+      })
     end,
   },
   { -- Sudo editing
@@ -1130,7 +1145,7 @@ vim.keymap.set('n', ']T', ':tablast<CR>', { desc = 'Last tab' })
 -- Save keymaps
 vim.keymap.set('i', '<M-s>', ':update<CR><ESC>', { desc = 'Save file' })
 vim.keymap.set('n', '<M-s>', ':update<cr>', { desc = 'Save file' })
-vim.keymap.set('n', '<leader>s', ':update<cr>', { desc = 'Save file' })
+-- vim.keymap.set('n', '<leader>s', ':update<cr>', { desc = 'Save file' })
 
 -- Backspace to delete word in normal mode
 vim.keymap.set('n', '<BS>', 'ciw', { desc = 'Delete word' })
@@ -1228,5 +1243,19 @@ vim.api.nvim_create_autocmd('TermOpen', {
   end,
 })
 
+-- alias command
+vim.api.nvim_create_user_command('AI', function()
+  vim.cmd 'CodeCompanionChat'
+end, {})
+
+-- -- Run Telescope's quickfix picker automatically after Grepper finishes
+-- vim.api.nvim_create_autocmd('User', {
+--   pattern = 'Grepper',
+--   callback = function()
+--     require('telescope.builtin').quickfix()
+--   end,
+-- })
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+--
